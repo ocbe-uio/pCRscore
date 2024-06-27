@@ -1,0 +1,31 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pCRscore"
+version = "0.0.1"
+authors = [
+  {name="Youness Azimzade"},
+]
+maintainers = [
+  {name="Waldir Leoncio", email="w.l.netto@medisin.uio.no"},
+]
+description = "Predicts patholodical Complete Response scores"
+readme = "README.md"
+requires-python = ">= 3.12"
+dependencies = [
+  "pandas", "numpy", "seaborn", "pylab", "matplotlib", "sklearn", "shap"
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License (GPL)",
+    "Operating System :: OS Independent",
+    "Development Status :: 2 - Pre-Alpha",
+    "Intended Audience :: Science/Research",
+    "Natural Language :: English"
+]
+
+[project.urls]
+Homepage = "https://github.com/ocbe-uio/pCRscore"
+Issues = "https://github.com/ocbe-uio/pCRscore/issues"
