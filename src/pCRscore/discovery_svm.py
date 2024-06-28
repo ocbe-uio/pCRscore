@@ -53,7 +53,6 @@ def extract_features(data):
 
 def grid_search(X, y, n_cores = 1):
     # TODO: profile (with cProfile?) to possibly add progress bar
-    # TODO: allow multithreading?
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
         'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
