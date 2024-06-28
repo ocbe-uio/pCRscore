@@ -1,5 +1,9 @@
 import pandas
+import numpy
 from sklearn import preprocessing
+from sklearn.metrics import make_scorer, f1_score, accuracy_score
+from sklearn.model_selection import GridSearchCV, train_test_split, StratifiedKFold
+from sklearn.svm import SVC
 
 # TODO: add code from
 # https://github.com/YounessAzimzade/XML-TME-NAC-BC/blob/main/Discovery%20SVM.ipynb
@@ -46,3 +50,35 @@ def extract_features(data):
     )
 
     return X, y
+
+def grid_search(X, y):
+    # Defining the parameter range for the hyperparameter grid search
+    param_grid = {
+    'C': numpy.exp(numpy.linspace(-12, 3, num=50)),
+    'gamma': numpy.exp(numpy.linspace(-12, 1, num=50)),
+    'kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+    }
+
+    # Define a custom scoring dictionary that includes F1 score and accuracy
+    scoring = {
+    'F1': make_scorer(f1_score),
+    'Accuracy': make_scorer(accuracy_score)
+    }
+
+    # Create a StratifiedKFold object with 5 splits for cross-validation
+    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+
+    # Split the dataset into training and testing sets using train_test_split
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3333)  # Make sure to import `train_test_split` before using it.
+
+    # Create a GridSearchCV object with the SVC classifier, parameter grid, custom scoring, refit based on F1 score, 10-fold cross-validation, and no verbosity
+    grid = GridSearchCV(SVC(class_weight='balanced'), param_grid, scoring=scoring, refit='F1', verbose=0, cv=10)
+
+    # Fit the model for grid search using the training data
+    grid.fit(X_train, y_train)
+
+    # Print the best parameters found during grid search
+    print(grid.best_params_)
+
+    # Print the best estimator (model) found during grid search
+    print(grid.best_estimator_)
