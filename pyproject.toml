@@ -6,10 +6,10 @@ build-backend = "hatchling.build"
 name = "pCRscore"
 version = "0.0.2"
 authors = [
-  {name="Youness Azimzade"},
+  {name="Youness Azimzade"}
 ]
 maintainers = [
-  {name="Waldir Leoncio", email="w.l.netto@medisin.uio.no"},
+  {name="Waldir Leoncio", email="w.l.netto@medisin.uio.no"}
 ]
 description = "Predicts patholodical Complete Response scores"
 readme = "README.md"
