@@ -70,15 +70,14 @@ def grid_search(X, y, n_cores = 1):
     kfold = StratifiedKFold(n_splits = 5, shuffle = True, random_state = 0)
 
     # Split the dataset into training and testing sets
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3333) # TODO: replace with 1 / 3?
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 1 / 3)
 
     # Create a GridSearchCV object with the SVC classifier, parameter grid,
     # custom scoring, refit based on F1 score, 10-fold cross-validation, and
     # no verbosity
     grid = GridSearchCV(
         SVC(class_weight='balanced'),
-        param_grid, scoring = scoring, refit = 'F1', verbose = 0, cv = 10,
-        n_jobs = n_cores
+        param_grid, scoring = scoring, refit = 'F1', cv = 10, n_jobs = n_cores
     )
 
     # Fit the model for grid search using the training data
