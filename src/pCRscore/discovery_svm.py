@@ -51,7 +51,9 @@ def extract_features(data):
 
     return X, y
 
-def grid_search(X, y):
+def grid_search(X, y, n_cores = 1):
+    # TODO: profile (with cProfile?) to possibly add progress bar
+    # TODO: allow multithreading?
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
         'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
@@ -66,13 +68,19 @@ def grid_search(X, y):
     }
 
     # Create a StratifiedKFold object with 5 splits for cross-validation
-    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
+    kfold = StratifiedKFold(n_splits = 5, shuffle = True, random_state = 0)
 
-    # Split the dataset into training and testing sets using train_test_split
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3333)  # Make sure to import `train_test_split` before using it.
+    # Split the dataset into training and testing sets
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.3333) # TODO: replace with 1 / 3?
 
-    # Create a GridSearchCV object with the SVC classifier, parameter grid, custom scoring, refit based on F1 score, 10-fold cross-validation, and no verbosity
-    grid = GridSearchCV(SVC(class_weight='balanced'), param_grid, scoring=scoring, refit='F1', verbose=0, cv=10)
+    # Create a GridSearchCV object with the SVC classifier, parameter grid,
+    # custom scoring, refit based on F1 score, 10-fold cross-validation, and
+    # no verbosity
+    grid = GridSearchCV(
+        SVC(class_weight='balanced'),
+        param_grid, scoring = scoring, refit = 'F1', verbose = 0, cv = 10,
+        n_jobs = n_cores
+    )
 
     # Fit the model for grid search using the training data
     grid.fit(X_train, y_train)
