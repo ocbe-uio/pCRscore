@@ -2,6 +2,14 @@
 
 Python package for predicting pathological Complete Response (pCR) scores according to [Azimzade et al. (2023)](https://www.biorxiv.org/content/10.1101/2023.09.07.556655). The original source code is available at https://github.com/YounessAzimzade/XML-TME-NAC-BC.
 
+# Installation
+
+This package is under development and not yet available on PyPI. You can, nonetheless, install the development version directly from GitHub by running this command on your terminal:
+
+```bash
+pip install git+https://github.com/ocbe-uio/pCRscore.git
+```
+
 # References
 
 Explainable Machine Learning Reveals the Role of the Breast Tumor Microenvironment in Neoadjuvant Chemotherapy Outcome
