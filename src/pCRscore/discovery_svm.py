@@ -54,15 +54,15 @@ def extract_features(data):
 def grid_search(X, y):
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
-    'C': numpy.exp(numpy.linspace(-12, 3, num=50)),
-    'gamma': numpy.exp(numpy.linspace(-12, 1, num=50)),
-    'kernel': ['linear', 'rbf', 'poly', 'sigmoid']
+        'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
+        'gamma': numpy.exp(numpy.linspace(-12, 1, num = 50)),
+        'kernel': ['linear', 'rbf', 'poly', 'sigmoid']
     }
 
     # Define a custom scoring dictionary that includes F1 score and accuracy
     scoring = {
-    'F1': make_scorer(f1_score),
-    'Accuracy': make_scorer(accuracy_score)
+        'F1': make_scorer(f1_score),
+        'Accuracy': make_scorer(accuracy_score)
     }
 
     # Create a StratifiedKFold object with 5 splits for cross-validation
