@@ -1,11 +1,10 @@
 import pandas
 from sklearn import preprocessing
 
-def preprocess(data):
-    # TODO: add code from
-    # https://github.com/YounessAzimzade/XML-TME-NAC-BC/blob/main/Discovery%20SVM.ipynb
-    # section "Preprocessing"
+# TODO: add code from
+# https://github.com/YounessAzimzade/XML-TME-NAC-BC/blob/main/Discovery%20SVM.ipynb
 
+def preprocess(data):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
@@ -34,12 +33,13 @@ def extract_features(data):
     X = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
     d3 = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
 
-    # P# Extract the target variable 'y' (dependent variable) from the 'data' DataFrame
+    # P# Extract the target variable 'y' (dependent variable)
     y = data['Response']
 
-    # Perform standardization on the features using the StandardScaler from sklearn
+    # Standardize the features using the StandardScaler from sklearn
     # This step scales the features to have mean 0 and standard deviation 1
-    # This is important for some machine learning algorithms that are sensitive to feature scales
+    # This is important for some machine learning algorithms that
+    # are sensitive to feature scales
     X = pandas.DataFrame(
         preprocessing.StandardScaler().fit(X).transform(X),
         columns = d3.columns
