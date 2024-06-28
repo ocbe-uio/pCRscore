@@ -9,5 +9,8 @@ deploy:
 install:
 	$(ENV_PATH)pip install -i https://test.pypi.org/simple/ pCRscore
 
+build:
+	$(ENV_PATH)python3 -m build
+
 local-install:
 	$(ENV_PATH)pip install .
