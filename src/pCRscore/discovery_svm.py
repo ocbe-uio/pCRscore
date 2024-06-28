@@ -85,8 +85,4 @@ def grid_search(X, y, n_cores = 1):
     # Fit the model for grid search using the training data
     grid.fit(X_train, y_train)
 
-    # Print the best parameters found during grid search
-    print(grid.best_params_)
-
-    # Print the best estimator (model) found during grid search
-    print(grid.best_estimator_)
+    return grid
