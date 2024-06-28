@@ -1,3 +1,5 @@
+# Fetch version number from pyproject.toml
+
 try:
     # Try to fetch the version for installed packages
     from importlib.metadata import version
@@ -10,3 +12,7 @@ except ImportError:
     except ImportError:
         # Set a default version or leave it undefined if you prefer
         __version__ = "unknown"
+
+
+# Load modules
+from . import discovery_svm
