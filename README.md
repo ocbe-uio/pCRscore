@@ -4,7 +4,7 @@ Python package for predicting pathological Complete Response (pCR) scores accord
 
 # Installation
 
-This package is under development and not yet available on PyPI. You can, nonetheless, install the development version directly from GitHub by running this command on your terminal:
+This package is under development and not yet available on PyPI. You can, nonetheless, install the development version directly from GitHub by running this command on your terminal (requires git):
 
 ```bash
 pip install git+https://github.com/ocbe-uio/pCRscore.git
