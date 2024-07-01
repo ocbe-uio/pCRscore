@@ -14,3 +14,6 @@ build:
 
 local-install:
 	$(ENV_PATH)pip install .
+
+test:
+	$(ENV_PATH)pytest
