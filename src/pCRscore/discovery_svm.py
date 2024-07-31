@@ -2,8 +2,10 @@ import pandas
 import numpy
 from sklearn import preprocessing
 from sklearn.metrics import make_scorer, f1_score, accuracy_score
-from sklearn.model_selection import GridSearchCV, train_test_split, StratifiedKFold
+from sklearn.model_selection import \
+    GridSearchCV, train_test_split, StratifiedKFold, KFold, cross_val_score
 from sklearn.svm import SVC
+from sklearn.datasets import make_classification
 
 # TODO: add code from
 # https://github.com/YounessAzimzade/XML-TME-NAC-BC/blob/main/Discovery%20SVM.ipynb
@@ -84,3 +86,33 @@ def grid_search(X, y, n_cores = 1, verbose = 0):
     grid.fit(X_train, y_train)
 
     return grid
+
+def evaluate_model(X, y, verbose = False):
+    # We normally start with the model that has the best performance and
+    # fine tune the parameters to find the best model.
+    # Here, the following model found to have the best performance
+    # based on combined score
+
+    # Create model
+    model = SVC(
+        C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
+        class_weight = 'balanced'
+    )
+
+    # It should be noted that SHAP values calculated using these two models are
+    # very similar, particularly for features with high correlation to response.
+
+    cv = KFold(n_splits=5, random_state=1, shuffle=True)
+
+    # evaluate model
+    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
+    f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-1)
+    roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-1)
+
+    # report performance
+    if verbose:
+        print('Accuracy: %.3f (%.3f)' % (numpy.mean(Acc_score)*100, numpy.std(Acc_score)*100))
+        print('f1 score: %.3f (%.3f)' % (numpy.mean(f1_score), numpy.std(f1_score)))
+        print('AUC: %.3f (%.3f)' % (numpy.mean(roc_auc), numpy.std(roc_auc)))
+
+    return {'Accuracy': Acc_score, 'f1 score': f1_score, 'AUC': roc_auc}
