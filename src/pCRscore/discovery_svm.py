@@ -51,8 +51,7 @@ def extract_features(data):
 
     return X, y
 
-def grid_search(X, y, n_cores = 1):
-    # TODO: profile (with cProfile?) to possibly add progress bar
+def grid_search(X, y, n_cores = 1, verbose = 0):
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
         'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
@@ -77,7 +76,8 @@ def grid_search(X, y, n_cores = 1):
     # no verbosity
     grid = GridSearchCV(
         SVC(class_weight='balanced'),
-        param_grid, scoring = scoring, refit = 'F1', cv = 10, n_jobs = n_cores
+        param_grid, scoring = scoring, refit = 'F1', cv = 10, n_jobs = n_cores,
+        verbose = verbose
     )
 
     # Fit the model for grid search using the training data
