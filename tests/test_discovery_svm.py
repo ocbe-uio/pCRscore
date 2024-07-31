@@ -56,3 +56,5 @@ def test_preprocess(mock_read_csv, mock_data):
 
     X, y = discovery_svm.extract_features(data)
     assert X.shape == (100, 44)
+
+# TODO: add tests for SVM grid_search and evaluate_model
