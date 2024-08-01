@@ -59,7 +59,7 @@ def test_preprocess(mock_read_csv, mock_data):
 
 @pytest.mark.slow
 def test_grid_search():
-    X = np.random.randn(100, 44)
+    X = pd.DataFrame(np.random.randn(100, 44))
     y = np.random.choice([0, 1], 100)
     grid = discovery_svm.grid_search(X, y)
     assert isinstance(grid, discovery_svm.GridSearchCV)
@@ -70,7 +70,14 @@ def test_evaluate_model():
     X = np.random.randn(100, 44)
     y = np.random.choice([0, 1], 100)
     stats = discovery_svm.evaluate_model(X, y)
-    assert isinstance(stats, tuple)
+    assert isinstance(stats, dict)
     assert len(stats) == 3
-    for i in range(3):
+    for i in stats:
         assert len(stats[i]) == 5
+
+def test_shapley():
+    X = pd.DataFrame(np.random.randn(100, 44))
+    y = np.random.choice([0, 1], 100)
+    shapl = discovery_svm.shap_analysis(X, y)
+    assert isinstance(shapl, pd.core.frame.DataFrame)
+    assert shapl.shape == (100, 44)

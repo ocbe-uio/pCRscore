@@ -109,9 +109,11 @@ def evaluate_model(X, y, verbose = False):
 
     # report performance
     if verbose:
-        print('Accuracy: %.3f (%.3f)' % (numpy.mean(Acc_score)*100, numpy.std(Acc_score)*100))
-        print('f1 score: %.3f (%.3f)' % (numpy.mean(f1_score), numpy.std(f1_score)))
-        print('AUC: %.3f (%.3f)' % (numpy.mean(roc_auc), numpy.std(roc_auc)))
+        print('Accuracy: %.3f (%.3f)\nf1 score: %.3f (%.3f)\nAUC: %.3f (%.3f)' %
+            (numpy.mean(Acc_score) * 100, numpy.std(Acc_score) * 100,
+            numpy.mean(f1_score), numpy.std(f1_score),
+            numpy.mean(roc_auc), numpy.std(roc_auc))
+        )
 
     return {'Accuracy': Acc_score, 'f1 score': f1_score, 'AUC': roc_auc}
 
@@ -139,6 +141,6 @@ def shap_analysis(X, y, K = 0):
     # calculating SHAP values for X using the explainer
     # For 1000 samples it takes 50 hours on a single core of 8gen intel CPU
     svm_shap_values = svm_explainer.shap_values(X)
-    svm_shap_values = pandas.DataFrame(svm_shap_values, columns = X.columns)
+    svm_shap_values = pandas.DataFrame(svm_shap_values, columns=X.columns)
 
     return svm_shap_values
