@@ -8,9 +8,6 @@ from sklearn.model_selection import \
 from sklearn.svm import SVC
 from sklearn.datasets import make_classification
 
-# TODO: add code from
-# https://github.com/YounessAzimzade/XML-TME-NAC-BC/blob/main/Discovery%20SVM.ipynb
-
 def preprocess(data):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
