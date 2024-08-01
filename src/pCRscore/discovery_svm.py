@@ -94,10 +94,7 @@ def evaluate_model(X, y, verbose = False):
     # based on combined score
 
     # Create model
-    model = SVC(
-        C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
-        class_weight = 'balanced'
-    )
+    model = fit_svc()
 
     # It should be noted that SHAP values calculated using these two models are
     # very similar, particularly for features with high correlation to response.
@@ -116,3 +113,9 @@ def evaluate_model(X, y, verbose = False):
         print('AUC: %.3f (%.3f)' % (numpy.mean(roc_auc), numpy.std(roc_auc)))
 
     return {'Accuracy': Acc_score, 'f1 score': f1_score, 'AUC': roc_auc}
+
+def fit_svc():
+    return SVC(
+        C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
+        class_weight = 'balanced'
+    )
