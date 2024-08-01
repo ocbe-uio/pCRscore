@@ -147,3 +147,6 @@ def shap_analysis(X, y, K = 0, pandas_out = False):
         )
 
     return svm_shap_values
+
+def shap_plot(shap_values, X, type = 'dot'):
+    shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
