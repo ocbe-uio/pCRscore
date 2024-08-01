@@ -16,7 +16,9 @@ local-install:
 	$(ENV_PATH)pip install .
 
 test:
+	make local-install
 	$(ENV_PATH)pytest -m "not slow"
 
 test-full:
+	make local-install
 	$(ENV_PATH)pytest
