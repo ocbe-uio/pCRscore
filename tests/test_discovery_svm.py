@@ -81,3 +81,4 @@ def test_shapley():
     shapl = discovery_svm.shap_analysis(X, y)
     assert isinstance(shapl, np.ndarray)
     assert shapl.shape == (100, 44)
+    discovery_svm.shap_plot(shapl, X)
