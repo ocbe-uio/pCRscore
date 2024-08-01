@@ -121,9 +121,14 @@ def fit_svc():
         class_weight = 'balanced'
     )
 
-def shap_analysis(X, y):
+def shap_analysis(X, y, K = 0):
     # Create model
     clf = fit_svc()
+
+    # Reducing dataset (useful for test runs)
+    if K > 0:
+        X = X.sample(n = K, replace = False)
+        y = y[X.index]
 
     # fitting the model to all discovery data
     clf.fit(X, y)
