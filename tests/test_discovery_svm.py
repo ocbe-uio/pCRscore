@@ -79,5 +79,5 @@ def test_shapley():
     X = pd.DataFrame(np.random.randn(100, 44))
     y = np.random.choice([0, 1], 100)
     shapl = discovery_svm.shap_analysis(X, y)
-    assert isinstance(shapl, pd.core.frame.DataFrame)
+    assert isinstance(shapl, np.ndarray)
     assert shapl.shape == (100, 44)
