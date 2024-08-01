@@ -1,5 +1,6 @@
 import pandas
 import numpy
+import shap
 from sklearn import preprocessing
 from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
@@ -36,8 +37,8 @@ def extract_features(data):
     # Extract the features (independent variables) and create a DataFrame 'X'
     # Drop columns 'Trial', 'Mixture', 'Response', and 'Cohort' to get features
     dropped_columns = ['Trial', 'Mixture', 'Response', 'Cohort']
-    X = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
-    d3 = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
+    X = data.drop(dropped_columns, axis = 1)
+    d3 = data.drop(dropped_columns, axis = 1)
 
     # P# Extract the target variable 'y' (dependent variable)
     y = data['Response']
@@ -48,7 +49,7 @@ def extract_features(data):
     # are sensitive to feature scales
     X = pandas.DataFrame(
         preprocessing.StandardScaler().fit(X).transform(X),
-        columns = d3.columns
+        index = d3.index, columns = d3.columns
     )
 
     return X, y
@@ -94,10 +95,7 @@ def evaluate_model(X, y, verbose = False):
     # based on combined score
 
     # Create model
-    model = SVC(
-        C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
-        class_weight = 'balanced'
-    )
+    model = fit_svc()
 
     # It should be noted that SHAP values calculated using these two models are
     # very similar, particularly for features with high correlation to response.
@@ -111,8 +109,44 @@ def evaluate_model(X, y, verbose = False):
 
     # report performance
     if verbose:
-        print('Accuracy: %.3f (%.3f)' % (numpy.mean(Acc_score)*100, numpy.std(Acc_score)*100))
-        print('f1 score: %.3f (%.3f)' % (numpy.mean(f1_score), numpy.std(f1_score)))
-        print('AUC: %.3f (%.3f)' % (numpy.mean(roc_auc), numpy.std(roc_auc)))
+        print('Accuracy: %.3f (%.3f)\nf1 score: %.3f (%.3f)\nAUC: %.3f (%.3f)' %
+            (numpy.mean(Acc_score) * 100, numpy.std(Acc_score) * 100,
+            numpy.mean(f1_score), numpy.std(f1_score),
+            numpy.mean(roc_auc), numpy.std(roc_auc))
+        )
 
     return {'Accuracy': Acc_score, 'f1 score': f1_score, 'AUC': roc_auc}
+
+def fit_svc():
+    return SVC(
+        C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
+        class_weight = 'balanced'
+    )
+
+def shap_analysis(X, y, K = 0, pandas_out = False):
+    # Create model
+    clf = fit_svc()
+
+    # Reducing dataset (useful for test runs)
+    if K > 0:
+        X = X.sample(n = K, replace = False)
+        y = y[X.index]
+
+    # fitting the model to all discovery data
+    clf.fit(X, y)
+
+    # creating the explainer using the model and X as the background
+    svm_explainer = shap.KernelExplainer(clf.predict, X)
+
+    # calculating SHAP values for X using the explainer
+    # For 1000 samples it takes 50 hours on a single core of 8gen intel CPU
+    svm_shap_values = svm_explainer.shap_values(X)
+    if pandas_out:
+        svm_shap_values = pandas.DataFrame(
+            svm_shap_values, columns=X.columns, index=X.index
+        )
+
+    return svm_shap_values
+
+def shap_plot(shap_values, X, type = 'dot'):
+    shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
