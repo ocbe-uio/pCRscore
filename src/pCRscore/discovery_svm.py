@@ -1,5 +1,6 @@
 import pandas
 import numpy
+import shap
 from sklearn import preprocessing
 from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
@@ -119,3 +120,20 @@ def fit_svc():
         C = 1, gamma = 0.1, kernel = 'rbf', probability = True,
         class_weight = 'balanced'
     )
+
+def shap_analysis(X, y):
+    # Create model
+    clf = fit_svc()
+
+    # fitting the model to all discovery data
+    clf.fit(X, y)
+
+    # creating the explainer using the model and X as the background
+    svm_explainer = shap.KernelExplainer(clf.predict, X)
+
+    # calculating SHAP values for X using the explainer
+    # For 1000 samples it takes 50 hours on a single core of 8gen intel CPU
+    svm_shap_values = svm_explainer.shap_values(X)
+    svm_shap_values = pandas.DataFrame(svm_shap_values, columns = X.columns)
+
+    return svm_shap_values
