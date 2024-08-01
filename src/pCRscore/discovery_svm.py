@@ -37,8 +37,8 @@ def extract_features(data):
     # Extract the features (independent variables) and create a DataFrame 'X'
     # Drop columns 'Trial', 'Mixture', 'Response', and 'Cohort' to get features
     dropped_columns = ['Trial', 'Mixture', 'Response', 'Cohort']
-    X = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
-    d3 = pandas.DataFrame(data.drop(dropped_columns, axis = 1))
+    X = data.drop(dropped_columns, axis = 1)
+    d3 = data.drop(dropped_columns, axis = 1)
 
     # P# Extract the target variable 'y' (dependent variable)
     y = data['Response']
@@ -49,7 +49,7 @@ def extract_features(data):
     # are sensitive to feature scales
     X = pandas.DataFrame(
         preprocessing.StandardScaler().fit(X).transform(X),
-        columns = d3.columns
+        index = d3.index, columns = d3.columns
     )
 
     return X, y
