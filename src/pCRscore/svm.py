@@ -46,7 +46,7 @@ def extract_features(data):
     X = data.drop(dropped_columns, axis = 1)
     d3 = data.drop(dropped_columns, axis = 1)
 
-    # P# Extract the target variable 'y' (dependent variable)
+    # Extract the target variable 'y' (dependent variable)
     y = data['Response']
 
     # Standardize the features using the StandardScaler from sklearn
