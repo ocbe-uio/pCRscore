@@ -8,7 +8,7 @@ from sklearn.model_selection import \
 from sklearn.svm import SVC
 from sklearn.datasets import make_classification
 
-def preprocess(data):
+def preprocess(data, svm_type = "discovery"):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
@@ -22,10 +22,19 @@ def preprocess(data):
     data = pandas.get_dummies(data, columns=categorical_cols)
 
     # Selecting validation cohort data
-    valid_cohort = [
-        'E-MTAB-4439', 'GSE18728', 'GSE19697', 'GSE20194', 'GSE20271',
-        'GSE22093', 'GSE22358', 'GSE42822', 'GSE22513'
-    ]
+    if svm_type == "discovery":
+        valid_cohort = [
+            'E-MTAB-4439', 'GSE18728', 'GSE19697', 'GSE20194', 'GSE20271',
+            'GSE22093', 'GSE22358', 'GSE42822', 'GSE22513'
+        ]
+    elif svm_type == "validation":
+        valid_cohort = [
+            'GSE25066', 'GSE32603', 'GSE32646', 'GSE37946', 'GSE50948',
+            'GSE23988'
+        ]
+    else:
+        raise ValueError("Invalid SVM type. Choose 'discovery' or 'validation'")
+
     data = data[data['Trial'].isin(valid_cohort)]
 
     return data
@@ -37,7 +46,7 @@ def extract_features(data):
     X = data.drop(dropped_columns, axis = 1)
     d3 = data.drop(dropped_columns, axis = 1)
 
-    # P# Extract the target variable 'y' (dependent variable)
+    # Extract the target variable 'y' (dependent variable)
     y = data['Response']
 
     # Standardize the features using the StandardScaler from sklearn
@@ -51,7 +60,7 @@ def extract_features(data):
 
     return X, y
 
-def grid_search(X, y, n_cores = 1, verbose = 0):
+def grid_search(X, y, n_cores = -2, verbose = 0):
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
         'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
@@ -100,9 +109,9 @@ def evaluate_model(X, y, verbose = False):
     cv = KFold(n_splits=5, random_state=1, shuffle=True)
 
     # evaluate model
-    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
-    f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-1)
-    roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-1)
+    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-2)
+    f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-2)
+    roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-2)
 
     # report performance
     if verbose:

@@ -1,4 +1,4 @@
-from pCRscore import discovery_svm
+from pCRscore import svm
 import pandas as pd
 from unittest import mock
 import pytest
@@ -50,26 +50,30 @@ def test_preprocess(mock_read_csv, mock_data):
    # Configure the mock to return your predefined DataFrame
     mock_read_csv.return_value = mock_data
 
-    data = pd.read_csv("Data NAC cohort _1_.csv") # returns mock data instead
-    data = discovery_svm.preprocess(data)
-    assert data.shape == (100, 48)
+    data_disc = pd.read_csv("Data NAC cohort _1_.csv") # returns mock data instead
+    data_valid = data_disc.copy()
+    data_disc = svm.preprocess(data_disc)
+    data_valid['Trial'] = 'GSE25066'
+    data_valid = svm.preprocess(data_valid, svm_type = "validation")
 
-    X, y = discovery_svm.extract_features(data)
-    assert X.shape == (100, 44)
+    for dt in [data_disc, data_valid]:
+        assert dt.shape == (100, 48)
+        X, y = svm.extract_features(dt)
+        assert X.shape == (100, 44)
 
 @pytest.mark.slow
 def test_grid_search():
     X = pd.DataFrame(np.random.randn(100, 44))
     y = np.random.choice([0, 1], 100)
-    grid = discovery_svm.grid_search(X, y)
-    assert isinstance(grid, discovery_svm.GridSearchCV)
+    grid = svm.grid_search(X, y, n_cores = -2)
+    assert isinstance(grid, svm.GridSearchCV)
     assert hasattr(grid, 'best_params_')
     assert hasattr(grid, 'best_score_')
 
 def test_evaluate_model():
     X = np.random.randn(100, 44)
     y = np.random.choice([0, 1], 100)
-    stats = discovery_svm.evaluate_model(X, y)
+    stats = svm.evaluate_model(X, y)
     assert isinstance(stats, dict)
     assert len(stats) == 3
     for i in stats:
@@ -78,7 +82,7 @@ def test_evaluate_model():
 def test_shapley():
     X = pd.DataFrame(np.random.randn(100, 44))
     y = np.random.choice([0, 1], 100)
-    shapl = discovery_svm.shap_analysis(X, y)
+    shapl = svm.shap_analysis(X, y)
     assert isinstance(shapl, np.ndarray)
     assert shapl.shape == (100, 44)
-    discovery_svm.shap_plot(shapl, X)
+    svm.shap_plot(shapl, X)
