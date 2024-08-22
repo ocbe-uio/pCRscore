@@ -1,4 +1,4 @@
-from pCRscore import discovery_svm
+from pCRscore import discovery_svm, common
 import pandas as pd
 from unittest import mock
 import pytest
@@ -51,7 +51,7 @@ def test_preprocess(mock_read_csv, mock_data):
     mock_read_csv.return_value = mock_data
 
     data = pd.read_csv("Data NAC cohort _1_.csv") # returns mock data instead
-    data = discovery_svm.preprocess(data)
+    data = common.preprocess(data)
     assert data.shape == (100, 48)
 
     X, y = discovery_svm.extract_features(data)
