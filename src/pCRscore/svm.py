@@ -32,6 +32,8 @@ def preprocess(data, svm_type = "discovery"):
             'GSE25066', 'GSE32603', 'GSE32646', 'GSE37946', 'GSE50948',
             'GSE23988'
         ]
+    else:
+        raise ValueError("Invalid SVM type. Choose 'discovery' or 'validation'")
 
     data = data[data['Trial'].isin(valid_cohort)]
 
