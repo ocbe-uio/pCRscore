@@ -50,6 +50,9 @@ def test_preprocess(mock_read_csv, mock_data):
    # Configure the mock to return your predefined DataFrame
     mock_read_csv.return_value = mock_data
 
-    data = pd.read_csv("Data NAC cohort _1_.csv") # returns mock data instead
+    data = pd.read_csv("AllSamplesCellFractionsAveraged10SM.csv") # returns mock data instead
     data = common.preprocess(data)
     assert data.shape == (100, 48)
+
+    X, y = common.extract_features(data)
+    assert X.shape == (100, 44)

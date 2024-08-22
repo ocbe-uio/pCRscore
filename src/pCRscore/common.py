@@ -1,5 +1,5 @@
-
 import pandas
+from sklearn import preprocessing
 
 def preprocess(data, svm_type = "discovery"):
     # Mapping the values in the 'Response' column to binary values 0 and 1
@@ -29,3 +29,24 @@ def preprocess(data, svm_type = "discovery"):
     data = data[data['Trial'].isin(valid_cohort)]
 
     return data
+
+def extract_features(data):
+    # Extract the features (independent variables) and create a DataFrame 'X'
+    # Drop columns 'Trial', 'Mixture', 'Response', and 'Cohort' to get features
+    dropped_columns = ['Trial', 'Mixture', 'Response', 'Cohort']
+    X = data.drop(dropped_columns, axis = 1)
+    d3 = data.drop(dropped_columns, axis = 1)
+
+    # P# Extract the target variable 'y' (dependent variable)
+    y = data['Response']
+
+    # Standardize the features using the StandardScaler from sklearn
+    # This step scales the features to have mean 0 and standard deviation 1
+    # This is important for some machine learning algorithms that
+    # are sensitive to feature scales
+    X = pandas.DataFrame(
+        preprocessing.StandardScaler().fit(X).transform(X),
+        index = d3.index, columns = d3.columns
+    )
+
+    return X, y

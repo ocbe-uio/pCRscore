@@ -54,7 +54,7 @@ def test_preprocess(mock_read_csv, mock_data):
     data = common.preprocess(data)
     assert data.shape == (100, 48)
 
-    X, y = discovery_svm.extract_features(data)
+    X, y = common.extract_features(data)
     assert X.shape == (100, 44)
 
 @pytest.mark.slow
