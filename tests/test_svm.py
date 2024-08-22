@@ -54,6 +54,9 @@ def test_preprocess(mock_read_csv, mock_data):
     data_valid = data_disc.copy()
     data_disc = svm.preprocess(data_disc)
     data_valid['Trial'] = 'GSE25066'
+    with pytest.raises(ValueError, match="Invalid SVM type."):
+       data_error = data_valid.copy()
+       svm.preprocess(data_error, svm_type = "da bomb")
     data_valid = svm.preprocess(data_valid, svm_type = "validation")
 
     for dt in [data_disc, data_valid]:
