@@ -1,4 +1,4 @@
-from pCRscore import common
+from pCRscore import svm
 import pandas as pd
 from unittest import mock
 import pytest
@@ -31,7 +31,7 @@ def mock_data():
   )
 
   # Adding the non-numerical columns manually
-  df['Trial'] = 'GSE22093'
+  df['Trial'] = 'E-MTAB-4439'
   df['Mixture'] = 'Mixture1'
   df['Cohort'] = 'Discovery'
   df['Response'] = np.random.choice(['pCR', 'RD'], num_rows)
@@ -50,9 +50,39 @@ def test_preprocess(mock_read_csv, mock_data):
    # Configure the mock to return your predefined DataFrame
     mock_read_csv.return_value = mock_data
 
-    data = pd.read_csv("AllSamplesCellFractionsAveraged10SM.csv") # returns mock data instead
-    data = common.preprocess(data)
-    assert data.shape == (100, 48)
+    data_disc = pd.read_csv("Data NAC cohort _1_.csv") # returns mock data instead
+    data_valid = data_disc.copy()
+    data_disc = svm.preprocess(data_disc)
+    data_valid['Trial'] = 'GSE25066'
+    data_valid = svm.preprocess(data_valid, svm_type = "validation")
 
-    X, y = common.extract_features(data)
-    assert X.shape == (100, 44)
+    for dt in [data_disc, data_valid]:
+        assert dt.shape == (100, 48)
+        X, y = svm.extract_features(dt)
+        assert X.shape == (100, 44)
+
+@pytest.mark.slow
+def test_grid_search():
+    X = pd.DataFrame(np.random.randn(100, 44))
+    y = np.random.choice([0, 1], 100)
+    grid = svm.grid_search(X, y, n_cores = -2)
+    assert isinstance(grid, svm.GridSearchCV)
+    assert hasattr(grid, 'best_params_')
+    assert hasattr(grid, 'best_score_')
+
+def test_evaluate_model():
+    X = np.random.randn(100, 44)
+    y = np.random.choice([0, 1], 100)
+    stats = svm.evaluate_model(X, y)
+    assert isinstance(stats, dict)
+    assert len(stats) == 3
+    for i in stats:
+        assert len(stats[i]) == 5
+
+def test_shapley():
+    X = pd.DataFrame(np.random.randn(100, 44))
+    y = np.random.choice([0, 1], 100)
+    shapl = svm.shap_analysis(X, y)
+    assert isinstance(shapl, np.ndarray)
+    assert shapl.shape == (100, 44)
+    svm.shap_plot(shapl, X)
