@@ -61,7 +61,7 @@ def test_preprocess(mock_read_csv, mock_data):
 def test_grid_search():
     X = pd.DataFrame(np.random.randn(100, 44))
     y = np.random.choice([0, 1], 100)
-    grid = svm.grid_search(X, y)
+    grid = svm.grid_search(X, y, n_cores = 2)
     assert isinstance(grid, svm.GridSearchCV)
     assert hasattr(grid, 'best_params_')
     assert hasattr(grid, 'best_score_')

@@ -58,7 +58,7 @@ def extract_features(data):
 
     return X, y
 
-def grid_search(X, y, n_cores = 1, verbose = 0):
+def grid_search(X, y, n_cores = -2, verbose = 0):
     # Defining the parameter range for the hyperparameter grid search
     param_grid = {
         'C': numpy.exp(numpy.linspace(-12, 3, num = 50)),
