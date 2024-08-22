@@ -107,9 +107,9 @@ def evaluate_model(X, y, verbose = False):
     cv = KFold(n_splits=5, random_state=1, shuffle=True)
 
     # evaluate model
-    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-1)
-    f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-1)
-    roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-1)
+    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-2)
+    f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-2)
+    roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-2)
 
     # report performance
     if verbose:
