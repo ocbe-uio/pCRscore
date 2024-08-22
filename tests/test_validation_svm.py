@@ -1,4 +1,4 @@
-from pCRscore import common
+from pCRscore import svm
 import pandas as pd
 from unittest import mock
 import pytest
@@ -51,8 +51,8 @@ def test_preprocess(mock_read_csv, mock_data):
     mock_read_csv.return_value = mock_data
 
     data = pd.read_csv("AllSamplesCellFractionsAveraged10SM.csv") # returns mock data instead
-    data = common.preprocess(data)
+    data = svm.preprocess(data)
     assert data.shape == (100, 48)
 
-    X, y = common.extract_features(data)
+    X, y = svm.extract_features(data)
     assert X.shape == (100, 44)

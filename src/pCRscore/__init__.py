@@ -15,5 +15,4 @@ except ImportError:
 
 
 # Load modules
-from . import common
-from . import discovery_svm
+from . import svm
