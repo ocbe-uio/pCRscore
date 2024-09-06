@@ -129,7 +129,7 @@ def fit_svc():
         class_weight = 'balanced'
     )
 
-def shap_analysis(X, y, pandas_out = False):
+def shap_analysis(X, y, nsamples='auto', l1_reg = 'auto', pandas_out = False):
     # Create model and fit to discovery data
     clf = fit_svc()
     clf.fit(X, y)
@@ -139,7 +139,9 @@ def shap_analysis(X, y, pandas_out = False):
 
     # calculating SHAP values for X using the explainer
     # For 1000 samples it takes 50 hours on a single core of 8gen intel CPU
-    svm_shap_values = svm_explainer.shap_values(X)
+    svm_shap_values = svm_explainer.shap_values(
+        X, nsamples=nsamples, l1_reg=l1_reg
+    )
 
     # Convert the SHAP values to a pandas DataFrame
     if pandas_out:
