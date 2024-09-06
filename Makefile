@@ -6,7 +6,7 @@ dist/pcrscore-0.0.1.tar.gz: src/ pyproject.toml
 deploy:
 	$(ENV_PATH)python3 -m twine upload --repository testpypi dist/* --skip-existing
 
-install:
+pip-install:
 	$(ENV_PATH)pip install -i https://test.pypi.org/simple/ pCRscore
 
 build:
