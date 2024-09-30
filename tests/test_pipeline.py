@@ -5,6 +5,7 @@ import math
 
 # Import DiscoveryData.csv and keep columns 4 to 39
 data = pandas.read_csv(".meta/DiscoveryData.csv")
+shap = pandas.read_csv(".meta/DiscoverySHAP.csv").iloc[:, 1:37] # TODO: incorporate filtering in pipeline?
 
 # Normalize data
 data_norm = pipeline.normalize_data(data.copy(), range(3, 39))
