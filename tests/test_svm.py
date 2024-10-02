@@ -87,11 +87,10 @@ def test_evaluate_model():
         assert len(stats[i]) == 5
 
 
-@pytest.mark.slow
 def test_shapley():
-    X = pd.DataFrame(np.random.randn(100, 44))
-    y = np.random.choice([0, 1], 100)
+    X = pd.DataFrame(np.random.randn(30, 44))
+    y = np.random.choice([0, 1], 30)
     shapl = svm.shap_analysis(X, y)
     assert isinstance(shapl, np.ndarray)
-    assert shapl.shape == (100, 44)
+    assert shapl.shape == (30, 44)
     svm.shap_plot(shapl, X)
