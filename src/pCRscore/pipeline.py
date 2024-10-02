@@ -7,6 +7,8 @@ def normalize_data(data, cols=None):
         data = data.iloc[:, cols]
     for i in range(data.shape[1]):
         data.iloc[:, i] /= data.iloc[:, i].quantile(0.99)
+        # Convert values above 1 to NA
+        data.iloc[:, i] = data.iloc[:, i].apply(lambda x: x if x <= 1 else None)
     return data
 
 # Function to combine normalized data and SHAP values
