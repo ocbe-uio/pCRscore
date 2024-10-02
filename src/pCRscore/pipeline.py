@@ -1,11 +1,15 @@
 import pandas
 
+# Function to drop non-float columns
+def drop_non_float(data, extra_cols=None):
+    data = data.select_dtypes(include='float')
+    if extra_cols is not None:
+        data = data.drop(data.columns[extra_cols], axis=1)
+    return data
+
 
 # Function to normalize cell fractions and remove outliers
-def normalize_data(data, cols=None):
-    # TODO: drop columns not corresponding to numbers?
-    if cols is not None:
-        data = data.iloc[:, cols]
+def normalize_data(data):
     for i in range(data.shape[1]):
         data.iloc[:, i] /= data.iloc[:, i].quantile(0.99)
         # Convert values above 1 to NA
