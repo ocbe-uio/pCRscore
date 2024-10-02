@@ -6,7 +6,7 @@ def normalize_data(data, cols=None):
     if cols is not None:
         data = data.iloc[:, cols]
     for i in range(data.shape[1]):
-        data.iloc[:, i] /= data.iloc[:, i].quantile(0.999)
+        data.iloc[:, i] /= data.iloc[:, i].quantile(0.99)
     return data
 
 # Function to combine normalized data and SHAP values
