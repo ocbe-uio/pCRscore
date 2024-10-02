@@ -1,5 +1,6 @@
 import pandas
 
+
 # Function to normalize cell fractions and remove outliers
 def normalize_data(data, cols=None):
     # TODO: drop columns not corresponding to numbers?
@@ -10,6 +11,7 @@ def normalize_data(data, cols=None):
         # Convert values above 1 to NA
         data.iloc[:, i] = data.iloc[:, i].apply(lambda x: x if x <= 1 else None)
     return data
+
 
 # Function to combine normalized data and SHAP values
 def combine_fractions_shap(data_norm, shap):

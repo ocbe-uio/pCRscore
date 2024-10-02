@@ -1,14 +1,14 @@
 from pCRscore import pipeline
-import pytest
 import pandas
 import math
 
 # Import DiscoveryData.csv and keep columns 4 to 39
 data = pandas.read_csv(".meta/DiscoveryData.csv")
-shap = pandas.read_csv(".meta/DiscoverySHAP.csv").iloc[:, 1:37] # TODO: incorporate filtering in pipeline?
+shap = pandas.read_csv(".meta/DiscoverySHAP.csv").iloc[:, 1:37]  # TODO: incorporate filtering in pipeline?
 
 # Normalize data
 data_norm = pipeline.normalize_data(data.copy(), range(3, 39))
+
 
 # Test
 def test_normalize_data():
@@ -18,8 +18,10 @@ def test_normalize_data():
     assert math.isclose(data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol)
     assert math.isclose(shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol)
 
+
 # Combine data and SHAP values
 data_shap = pipeline.combine_fractions_shap(data_norm, shap)
 
+
 def test_combine_fractions_shape():
-    assert data_shap.shape == (35928, 3) # FIXME: failing
+    assert data_shap.shape == (35928, 3)
