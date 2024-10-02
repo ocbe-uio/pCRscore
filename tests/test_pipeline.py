@@ -12,8 +12,8 @@ data_norm = pipeline.normalize_data(data.copy(), range(3, 39))
 
 # Test
 def test_normalize_data():
-  assert data_norm.shape[0] == data.shape[0]
-  assert data_norm.shape[1] == data.shape[1] - 11
-  tol = 1e-3
-  assert math.isclose(data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol)
-  assert math.isclose(data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol)
+    assert data_norm.shape == (data.shape[0], data.shape[1] - 11)
+    tol = 1e-3
+    assert math.isclose(data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol)
+    assert math.isclose(data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol)
+    assert math.isclose(shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol)
