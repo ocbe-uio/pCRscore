@@ -4,9 +4,8 @@ import shap
 from sklearn import preprocessing
 from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
-    GridSearchCV, train_test_split, StratifiedKFold, KFold, cross_val_score
+    GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
-from sklearn.datasets import make_classification
 
 
 def preprocess(data, svm_type="discovery"):
@@ -76,9 +75,6 @@ def grid_search(X, y, n_cores=-2, verbose=0):
         'F1': make_scorer(f1_score),
         'Accuracy': make_scorer(accuracy_score)
     }
-
-    # Create a StratifiedKFold object with 5 splits for cross-validation
-    kfold = StratifiedKFold(n_splits=5, shuffle=True, random_state=0)
 
     # Split the dataset into training and testing sets
     X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=1 / 3)
