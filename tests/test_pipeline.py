@@ -17,3 +17,9 @@ def test_normalize_data():
     assert math.isclose(data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol)
     assert math.isclose(data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol)
     assert math.isclose(shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol)
+
+# Combine data and SHAP values
+data_shap = pipeline.combine_fractions_shap(data_norm, shap)
+
+def test_combine_fractions_shape():
+    assert data_shap.shape == (35928, 3) # FIXME: failing
