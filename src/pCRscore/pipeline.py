@@ -10,8 +10,8 @@ def normalize_data(data, cols=None):
     return data
 
 # Function to combine normalized data and SHAP values
-def combine_fractions_shap(data, shap):
-    data_melted = pandas.melt(data)
+def combine_fractions_shap(data_norm, shap):
+    data_melted = pandas.melt(data_norm)
     shap_melted = pandas.melt(shap)
     all_pat_1 = pandas.concat([data_melted, shap_melted['value']], axis=1)
     all_pat_1.columns = ['Feature', 'Fraction', 'SHAP value']
