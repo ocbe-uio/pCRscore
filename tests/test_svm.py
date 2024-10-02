@@ -9,16 +9,16 @@ import numpy as np
 def mock_data():
     # Define the column names
     columns = [
-        "Trial", "Mixture", "B.cells.Memory", "B.cells.Naive", "CAFs.MSC.iCAF.like",
-        "CAFs.myCAF.like", "DCs", "Endothelial.ACKR1", "Endothelial.CXCL12",
-        "Endothelial.LYVE1", "Endothelial.RGS5", "GenMod1", "GenMod2", "GenMod3",
-        "GenMod4", "GenMod5", "GenMod6", "GenMod7", "Luminal.Progenitors",
-        "Macrophage", "Mature.Luminal", "Monocyte", "Myoepithelial", "NK.cells",
-        "NKT.cells", "Plasmablasts", "PVL.Differentiated", "PVL.Immature",
-        "T.cells.CD4.", "T.cells.CD8.", "Cancer.Cells", "Normal.Epi", "TCells",
-        "Myeloids", "BCells", "CAFs", "PVLs", "Endothelials", "ER", "Response",
-        "Cohort", "PAM50", "PAM50_Normal", "PAM50_LumA", "PAM50_Her2", "PAM50_LumB",
-        "PAM50_Basal"
+        "Trial", "Mixture", "B.cells.Memory", "B.cells.Naive",
+        "CAFs.MSC.iCAF.like", "CAFs.myCAF.like", "DCs", "Endothelial.ACKR1",
+        "Endothelial.CXCL12", "Endothelial.LYVE1", "Endothelial.RGS5",
+        "GenMod1", "GenMod2", "GenMod3", "GenMod4", "GenMod5", "GenMod6",
+        "GenMod7", "Luminal.Progenitors", "Macrophage", "Mature.Luminal",
+        "Monocyte", "Myoepithelial", "NK.cells", "NKT.cells", "Plasmablasts",
+        "PVL.Differentiated", "PVL.Immature", "T.cells.CD4.", "T.cells.CD8.",
+        "Cancer.Cells", "Normal.Epi", "TCells", "Myeloids", "BCells", "CAFs",
+        "PVLs", "Endothelials", "ER", "Response", "Cohort", "PAM50",
+        "PAM50_Normal", "PAM50_LumA", "PAM50_Her2", "PAM50_LumB", "PAM50_Basal"
     ]
 
     # Number of rows you want in your DataFrame
@@ -52,7 +52,7 @@ def test_preprocess(mock_read_csv, mock_data):
     # Configure the mock to return your predefined DataFrame
     mock_read_csv.return_value = mock_data
 
-    data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock data instead
+    data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock instead
     data_valid = data_disc.copy()
     data_disc = svm.preprocess(data_disc)
     data_valid['Trial'] = 'GSE25066'

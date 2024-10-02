@@ -33,7 +33,9 @@ def preprocess(data, svm_type="discovery"):
             'GSE23988'
         ]
     else:
-        raise ValueError("Invalid SVM type. Choose 'discovery' or 'validation'")
+        raise ValueError(
+            "Invalid SVM type. Choose 'discovery' or 'validation'"
+        )
 
     data = data[data['Trial'].isin(valid_cohort)]
 
@@ -104,12 +106,12 @@ def evaluate_model(X, y, verbose=False):
     model = fit_svc()
 
     # It should be noted that SHAP values calculated using these two models are
-    # very similar, particularly for features with high correlation to response.
+    # very similar, particularly for features with high correlation to response
 
     cv = KFold(n_splits=5, random_state=1, shuffle=True)
 
     # evaluate model
-    Acc_score = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-2)
+    acc = cross_val_score(model, X, y, scoring='accuracy', cv=cv, n_jobs=-2)
     f1_score = cross_val_score(model, X, y, scoring='f1', cv=cv, n_jobs=-2)
     roc_auc = cross_val_score(model, X, y, scoring='roc_auc', cv=cv, n_jobs=-2)
 
@@ -117,12 +119,12 @@ def evaluate_model(X, y, verbose=False):
     if verbose:
         print(
             'Accuracy: %.3f (%.3f)\nf1 score: %.3f (%.3f)\nAUC: %.3f (%.3f)' %
-            (numpy.mean(Acc_score) * 100, numpy.std(Acc_score) * 100,
+            (numpy.mean(acc) * 100, numpy.std(acc) * 100,
              numpy.mean(f1_score), numpy.std(f1_score),
              numpy.mean(roc_auc), numpy.std(roc_auc))
         )
 
-    return {'Accuracy': Acc_score, 'f1 score': f1_score, 'AUC': roc_auc}
+    return {'Accuracy': acc, 'f1 score': f1_score, 'AUC': roc_auc}
 
 
 def fit_svc():

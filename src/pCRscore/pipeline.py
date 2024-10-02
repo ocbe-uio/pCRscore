@@ -9,7 +9,7 @@ def normalize_data(data, cols=None):
     for i in range(data.shape[1]):
         data.iloc[:, i] /= data.iloc[:, i].quantile(0.99)
         # Convert values above 1 to NA
-        data.iloc[:, i] = data.iloc[:, i].apply(lambda x: x if x <= 1 else None)
+        data.iloc[:, i] = data.iloc[:, i].where(data.iloc[:, i] <= 1, None)
     return data
 
 
