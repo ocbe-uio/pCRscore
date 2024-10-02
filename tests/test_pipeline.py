@@ -9,9 +9,11 @@ shap_raw = pandas.read_csv(".meta/DiscoverySHAP.csv")
 data = pipeline.drop_non_float(data_raw)
 shap = pipeline.drop_non_float(shap_raw, extra_cols=range(36, 42))
 
+
 def test_drop_non_float_and_unnamed():
     assert data.shape == data_raw.iloc[:, 3:39].shape
     assert shap.shape == shap_raw.iloc[:, 1:37].shape
+
 
 # Normalize data
 data_norm = pipeline.normalize_data(data.copy())
