@@ -15,4 +15,4 @@ except ImportError:
 
 
 # Load modules
-from . import svm
+from . import svm, pipeline
