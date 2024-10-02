@@ -1,5 +1,6 @@
 import pandas
 
+
 # Function to drop non-float columns
 def drop_non_float(data, extra_cols=None):
     data = data.select_dtypes(include='float')
