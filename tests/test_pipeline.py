@@ -77,11 +77,15 @@ def test_normalize_data():
     assert data_norm.shape == data.shape
     if local:
         tol = 1e-3
-        assert math.isclose(data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol)
+        assert math.isclose(
+            data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol
+        )
         assert math.isclose(
             data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol
         )
-        assert math.isclose(shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol)
+        assert math.isclose(
+            shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol
+        )
 
 
 # Combine data and SHAP values
