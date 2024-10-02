@@ -12,7 +12,3 @@ except ImportError:
     except ImportError:
         # Set a default version or leave it undefined if you prefer
         __version__ = "unknown"
-
-
-# Load modules
-from . import svm, pipeline
