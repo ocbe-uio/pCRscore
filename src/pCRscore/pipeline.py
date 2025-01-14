@@ -41,3 +41,22 @@ def fit_line(data):
         ci = model.conf_int(alpha=0.001).loc['Fraction']
         result.append({'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]})
     return pandas.DataFrame(result)
+
+
+def combine_discovery_validation(data_disc, data_valid, fit_disc, fit_valid):
+    # Combine fit results
+    fit_combined = pandas.merge(
+        fit_valid, fit_disc, on="Feature", suffixes=("_Valid", "_Discv")
+    )
+    # Select cell types that show a clear association in both cohorts
+    fit_combined = fit_combined[
+        (fit_combined['Coef_Discv'] * fit_combined['Coef_Valid'] > 0) &
+        (fit_combined['CI_Valid'] > 0) &
+        (fit_combined['CI_Discv'] > 0)
+    ]
+    # All data put together
+    all_pat = pandas.concat([data_disc, data_valid], axis=0)
+
+    # Select only the cell types that pass the validation
+    all_pat = all_pat[all_pat['Feature'].isin(fit_combined['Feature'])]
+    return all_pat
