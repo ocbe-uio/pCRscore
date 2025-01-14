@@ -59,57 +59,57 @@ else:
     disc_shap_raw = mock_data(shap=True)
 
 
-data = pipeline.drop_non_float(disc_data_raw)
-shap = pipeline.drop_non_float(disc_shap_raw, extra_cols=range(36, 42))
+disc_data = pipeline.drop_non_float(disc_data_raw)
+disc_shap = pipeline.drop_non_float(disc_shap_raw, extra_cols=range(36, 42))
 
 
 def test_drop_non_float_and_unnamed():
-    assert data.shape == disc_data_raw.iloc[:, 3:39].shape
-    assert shap.shape == disc_shap_raw.iloc[:, 1:37].shape
+    assert disc_data.shape == disc_data_raw.iloc[:, 3:39].shape
+    assert disc_shap.shape == disc_shap_raw.iloc[:, 1:37].shape
 
 
 # Normalize data
-data_norm = pipeline.normalize_data(data.copy())
+disc_data_norm = pipeline.normalize_data(disc_data.copy())
 
 
 # Test
 def test_normalize_data():
-    assert data_norm.shape == data.shape
+    assert disc_data_norm.shape == disc_data.shape
     if local:
         tol = 1e-3
         assert math.isclose(
-            data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol
+            disc_data['B.cells.Memory'].iloc[0], 0.01789, rel_tol=tol
         )
         assert math.isclose(
-            data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol
+            disc_data_norm['B.cells.Memory'].iloc[0], 0.34186, rel_tol=tol
         )
         assert math.isclose(
-            shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol
+            disc_shap['Endothelials'].iloc[0], 0.037792, rel_tol=tol
         )
 
 
 # Combine data and SHAP values
-data_shap = pipeline.combine_fractions_shap(data_norm, shap)
+disc_data_shap = pipeline.combine_fractions_shap(disc_data_norm, disc_shap)
 
 
 def test_combine_fractions_shape():
-    assert data_shap.shape == (35928, 3)
+    assert disc_data_shap.shape == (35928, 3)
 
 
 # Fit lines for Discovery and Validation cohorts
-fit_discovery = pipeline.fit_line(data_shap)
+fit_disc = pipeline.fit_line(disc_data_shap)
 
 
 def test_fit_line():
-    assert fit_discovery.shape[0] == len(data_shap['Feature'].unique())
-    assert 'Feature' in fit_discovery.columns
-    assert 'Coef' in fit_discovery.columns
-    assert 'CI' in fit_discovery.columns
+    assert fit_disc.shape[0] == len(disc_data_shap['Feature'].unique())
+    assert 'Feature' in fit_disc.columns
+    assert 'Coef' in fit_disc.columns
+    assert 'CI' in fit_disc.columns
     if local:
-        line = fit_discovery['Feature'] == 'B.cells.Memory'
+        line = fit_disc['Feature'] == 'B.cells.Memory'
         assert math.isclose(
-            fit_discovery.loc[line, 'Coef'].values[0], -0.0198, rel_tol=1e-2
+            fit_disc.loc[line, 'Coef'].values[0], -0.0198, rel_tol=1e-2
         )
         assert math.isclose(
-            fit_discovery.loc[line, 'CI'].values[0], 0.0000193, rel_tol=1e-2
+            fit_disc.loc[line, 'CI'].values[0], 0.0000193, rel_tol=1e-2
         )
