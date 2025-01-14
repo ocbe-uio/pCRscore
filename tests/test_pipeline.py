@@ -50,22 +50,22 @@ def mock_data(shap=False):
 if os.path.exists(".meta"):
     # Running locally
     local = True
-    data_raw = pandas.read_csv(".meta/DiscoveryData.csv")
-    shap_raw = pandas.read_csv(".meta/DiscoverySHAP.csv")
+    disc_data_raw = pandas.read_csv(".meta/DiscoveryData.csv")
+    disc_shap_raw = pandas.read_csv(".meta/DiscoverySHAP.csv")
 else:
     # On GitHub Actions
     local = False
-    data_raw = mock_data()
-    shap_raw = mock_data(shap=True)
+    disc_data_raw = mock_data()
+    disc_shap_raw = mock_data(shap=True)
 
 
-data = pipeline.drop_non_float(data_raw)
-shap = pipeline.drop_non_float(shap_raw, extra_cols=range(36, 42))
+data = pipeline.drop_non_float(disc_data_raw)
+shap = pipeline.drop_non_float(disc_shap_raw, extra_cols=range(36, 42))
 
 
 def test_drop_non_float_and_unnamed():
-    assert data.shape == data_raw.iloc[:, 3:39].shape
-    assert shap.shape == shap_raw.iloc[:, 1:37].shape
+    assert data.shape == disc_data_raw.iloc[:, 3:39].shape
+    assert shap.shape == disc_shap_raw.iloc[:, 1:37].shape
 
 
 # Normalize data
