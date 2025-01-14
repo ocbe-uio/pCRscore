@@ -1,4 +1,5 @@
 import pandas
+import statsmodels.api
 
 
 # Function to drop non-float columns
@@ -26,3 +27,17 @@ def combine_fractions_shap(data_norm, shap):
     all_pat_1.columns = ['Feature', 'Fraction', 'SHAP value']
     all_pat_1_clean = all_pat_1.dropna()
     return all_pat_1_clean
+
+
+# Function to fit a line to SHAP vs Fraction for each cell type
+def fit_line(data):
+    result = []
+    grouped = data.groupby('Feature')
+    for name, group in grouped:
+        X = statsmodels.api.add_constant(group['Fraction'])
+        y = group['SHAP value']
+        model = statsmodels.api.OLS(y, X).fit()
+        coef = model.params['Fraction']
+        ci = model.conf_int(alpha=0.001).loc['Fraction']
+        result.append({'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]})
+    return pandas.DataFrame(result)
