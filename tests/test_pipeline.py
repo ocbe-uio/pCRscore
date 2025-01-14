@@ -52,6 +52,8 @@ if os.path.exists(".meta"):
     local = True
     disc_data_raw = pandas.read_csv(".meta/DiscoveryData.csv")
     disc_shap_raw = pandas.read_csv(".meta/DiscoverySHAP.csv")
+    valid_data_raw = pandas.read_csv(".meta/ValidationData.csv")
+    valid_shap_raw = pandas.read_csv(".meta/ValidationSHAP.csv")
 else:
     # On GitHub Actions
     local = False
@@ -61,6 +63,8 @@ else:
 
 disc_data = pipeline.drop_non_float(disc_data_raw)
 disc_shap = pipeline.drop_non_float(disc_shap_raw, extra_cols=range(36, 42))
+valid_data = pipeline.drop_non_float(valid_data_raw)
+valid_shap = pipeline.drop_non_float(valid_shap_raw, extra_cols=range(36, 42))
 
 
 def test_drop_non_float_and_unnamed():
@@ -70,6 +74,7 @@ def test_drop_non_float_and_unnamed():
 
 # Normalize data
 disc_data_norm = pipeline.normalize_data(disc_data.copy())
+valid_data_norm = pipeline.normalize_data(valid_data.copy())
 
 
 # Test
@@ -90,6 +95,7 @@ def test_normalize_data():
 
 # Combine data and SHAP values
 disc_data_shap = pipeline.combine_fractions_shap(disc_data_norm, disc_shap)
+valid_data_shap = pipeline.combine_fractions_shap(valid_data_norm, valid_shap)
 
 
 def test_combine_fractions_shape():
@@ -98,6 +104,7 @@ def test_combine_fractions_shape():
 
 # Fit lines for Discovery and Validation cohorts
 fit_disc = pipeline.fit_line(disc_data_shap)
+fit_valid = pipeline.fit_line(valid_data_shap)
 
 
 def test_fit_line():
