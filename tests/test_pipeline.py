@@ -94,3 +94,21 @@ data_shap = pipeline.combine_fractions_shap(data_norm, shap)
 
 def test_combine_fractions_shape():
     assert data_shap.shape == (35928, 3)
+
+# Fit lines for Discovery and Validation cohorts
+fit_discovery = pipeline.fit_line(data_shap)
+
+
+def test_fit_line():
+    assert fit_discovery.shape[0] == len(data_shap['Feature'].unique())
+    assert 'Feature' in fit_discovery.columns
+    assert 'Coef' in fit_discovery.columns
+    assert 'CI' in fit_discovery.columns
+    if local:
+        line = fit_discovery['Feature'] == 'B.cells.Memory'
+        assert math.isclose(
+            fit_discovery.loc[line, 'Coef'].values[0], -0.0198, rel_tol=1e-2
+        )
+        assert math.isclose(
+            fit_discovery.loc[line, 'CI'].values[0], 0.0000193, rel_tol=1e-2
+        )
