@@ -95,6 +95,7 @@ data_shap = pipeline.combine_fractions_shap(data_norm, shap)
 def test_combine_fractions_shape():
     assert data_shap.shape == (35928, 3)
 
+
 # Fit lines for Discovery and Validation cohorts
 fit_discovery = pipeline.fit_line(data_shap)
 
