@@ -42,8 +42,10 @@ jobs:
     - name: Lint with flake8
       run: flake8 .
     - name: Test with pytest and coverage
+      if: runner.os == 'Linux'
       run: pytest --cov=pCRscore -m "not slow"
     - name: Upload coverage to Codecov
+      if: runner.os == 'Linux'
       uses: codecov/codecov-action@v4.0.1
       with:
         token: ${{ secrets.CODECOV_TOKEN }}
