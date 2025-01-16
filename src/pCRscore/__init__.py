@@ -1,3 +1,12 @@
+"""
+Predicts pathological Complete Response scores
+
+To use this software, load one of the available modules listed under
+"PACKAGE CONTENTS".
+"""
+
+__author__ = "Youness Azimzade, Waldir Leoncio Netto"
+
 # Fetch version number from pyproject.toml
 
 try:
