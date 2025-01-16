@@ -1,5 +1,7 @@
 import pandas
 import statsmodels.api
+import matplotlib.pyplot as plt
+import seaborn
 
 
 # Function to drop non-float columns
@@ -30,7 +32,7 @@ def combine_fractions_shap(data_norm, shap):
 
 
 # Function to fit a line to SHAP vs Fraction for each cell type
-def fit_line(data):
+def fit_line(data, split_ci=False):
     result = []
     grouped = data.groupby('Feature')
     for name, group in grouped:
@@ -39,7 +41,14 @@ def fit_line(data):
         model = statsmodels.api.OLS(y, X).fit()
         coef = model.params['Fraction']
         ci = model.conf_int(alpha=0.001).loc['Fraction']
-        result.append({'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]})
+        if split_ci:
+            result.append(
+                {'Feature': name, 'Coef': coef, 'LI': ci[0], 'HI': ci[1]}
+            )
+        else:
+            result.append(
+               {'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]}
+            )
     return pandas.DataFrame(result)
 
 
@@ -60,3 +69,54 @@ def combine_discovery_validation(data_disc, data_valid, fit_disc, fit_valid):
     # Select only the cell types that pass the validation
     all_pat = all_pat[all_pat['Feature'].isin(fit_combined['Feature'])]
     return all_pat
+
+
+def _prep_plot_fit(fit):
+    # Preparations to plot Fig2
+    fit['Sign'] = fit['Coef'].apply(lambda x: 1 if x > 0 else -1)
+
+    fit = fit.sort_values(by='Coef', ascending=False)
+
+    fit['Feature'] = fit['Feature'].astype(str)
+    fit['Feature'] = pandas.Categorical(
+        fit['Feature'], categories=fit['Feature'], ordered=True
+    )
+    fit.columns = ["Cell Type", "Coef", "LI", "HI", "Sign"]
+
+    # Remove major cell types. By keeping them, we get suppl Fig 13 b.
+    major_cell_types = [
+        "CAFs", "PVLs", "TCells", "Normal.Epi", "BCells", "Endothelials",
+        "Myeloids", "Cancer.Cells"
+    ]
+    fit = fit[~fit['Cell Type'].isin(major_cell_types)]
+
+    fit['pCR Score'] = fit['Coef'] / fit['Coef'].quantile(0.95)
+    fit['pCR Score'] = fit['pCR Score'].clip(-1, 1)
+
+    # Update the CI scales
+    fit['LI'] = fit['LI'] * (fit['pCR Score'] / fit['Coef'])
+    fit['HI'] = fit['HI'] * (fit['pCR Score'] / fit['Coef'])
+
+    return fit
+
+
+def plot_fit(fit):
+    fit = _prep_plot_fit(fit)
+    plt.figure(figsize=(12, 8))
+    seaborn.barplot(
+        x='Cell Type', y='pCR Score', hue='Sign', data=fit, dodge=False,
+        palette=['yellow', 'purple']
+    )
+    plt.errorbar(
+        x=range(len(fit)), y=fit['pCR Score'],
+        yerr=[fit['pCR Score'] - fit['LI'], fit['HI'] - fit['pCR Score']],
+        fmt='none', c='black', capsize=5
+    )
+    plt.xticks(rotation=90, fontsize=12)
+    plt.yticks(fontsize=12)
+    plt.xlabel('Cell Type')
+    plt.ylabel('pCR Score', fontsize=14)
+    plt.annotate('pCR', xy=(-0.5, 1.15), fontsize=14, color='black')
+    plt.annotate('RD', xy=(-0.5, -1.13), fontsize=14, color='black')
+    plt.legend().set_visible(False)
+    plt.show()
