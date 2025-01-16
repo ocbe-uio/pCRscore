@@ -133,3 +133,26 @@ def test_combine_discovery_validation():
     assert 'SHAP value' in all_pat.columns
     if local:
         all_pat.shape == (15888, 3)
+
+
+# A new fitting is performed on discovery and validation data
+fit = pipeline.fit_line(all_pat, split_ci=True)
+
+
+def test_fit():
+    assert fit.shape[0] == len(all_pat['Feature'].unique())
+    assert 'Feature' in fit.columns
+    assert 'Coef' in fit.columns
+    assert 'LI' in fit.columns
+    assert 'HI' in fit.columns
+    if local:
+        line = fit['Feature'] == 'CAFs.myCAF.like'
+        assert math.isclose(
+            fit.loc[line, 'Coef'].values[0], -0.028020, rel_tol=1e-2
+        )
+        assert math.isclose(
+            fit.loc[line, 'LI'].values[0], -0.041878, rel_tol=1e-2
+        )
+        assert math.isclose(
+            fit.loc[line, 'HI'].values[0], -0.014161, rel_tol=1e-2
+        )

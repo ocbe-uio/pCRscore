@@ -30,7 +30,7 @@ def combine_fractions_shap(data_norm, shap):
 
 
 # Function to fit a line to SHAP vs Fraction for each cell type
-def fit_line(data):
+def fit_line(data, split_ci=False):
     result = []
     grouped = data.groupby('Feature')
     for name, group in grouped:
@@ -39,7 +39,14 @@ def fit_line(data):
         model = statsmodels.api.OLS(y, X).fit()
         coef = model.params['Fraction']
         ci = model.conf_int(alpha=0.001).loc['Fraction']
-        result.append({'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]})
+        if split_ci:
+            result.append(
+                {'Feature': name, 'Coef': coef, 'LI': ci[0], 'HI': ci[1]}
+            )
+        else:
+            result.append(
+               {'Feature': name, 'Coef': coef, 'CI': ci[0] * ci[1]}
+            )
     return pandas.DataFrame(result)
 
 
