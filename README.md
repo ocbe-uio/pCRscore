@@ -12,7 +12,15 @@ pip install git+https://github.com/ocbe-uio/pCRscore.git
 
 # Expected Input
 
-This package takes cell fractions, likely from spatial proteomics, scRNA seq or estimations using deconvolution methods and clinical out come (pCR vs RD- residual disease). It is possible to provide the cohort alongside these information, otherwise the code randomly assigns the rows to discovery and validation cohorts. 
+This package takes cell fractions, likely from spatial proteomics, scRNA seq or estimations using deconvolution methods and clinical out come (pCR vs RD- residual disease). It is possible to provide the "cohort" info   alongside these information, otherwise the code randomly assigns the rows to discovery and validation cohorts. 
+# Table Schematic Example
+
+| Column 1       | Column 2        | Column 3       |
+|-----------------|-----------------|----------------|
+| Data Row 1 Col 1| Data Row 1 Col 2| Data Row 1 Col 3|
+| Data Row 2 Col 1| Data Row 2 Col 2| Data Row 2 Col 3|
+| Data Row 3 Col 1| Data Row 3 Col 2| Data Row 3 Col 3|
+
 
 # Expected Output
 For each cell type, a pCR score is assined and provided in csv file. Ucertanity values for these scores are also provided. 
