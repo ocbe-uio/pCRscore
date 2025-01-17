@@ -15,11 +15,11 @@ pip install git+https://github.com/ocbe-uio/pCRscore.git
 This package takes cell fractions, likely from spatial proteomics, scRNA seq or estimations using deconvolution methods and clinical out come (pCR vs RD- residual disease). It is possible to provide the "Cohort" info   alongside these information, otherwise the code randomly assigns the rows to discovery and validation cohorts. 
 # Table Schematic Example
 
-| Sample        | CellType 1       | CellType 2 | .....       | Response        | Cohort |  
+| Sample        | CellType 1       | CellType 2 | ...       | Response        | Cohort |  
 |-----------------|-----------------|----------------|-----------------|-----------------|----------------|
-| TX1 | 15 | Data Row 1 Col 3|
-|  TX2 | Data Row 2 Col 2| Data Row 2 Col 3|
-| TX3| Data Row 3 Col 2| Data Row 3 Col 3|
+| TX1 | 15 | 4| ... | pCR | Discovery|
+|  TX2 | 0| 12| ... | RD | Validation|
+| TX3| 5| 17| ... | RD | Validation|
 
 
 # Expected Output
