@@ -16,9 +16,9 @@ This package takes cell fractions, likely from spatial proteomics, scRNA seq or 
 
 | Sample        | CellType 1       | CellType 2 | ...       | Response        | Cohort |  
 |-----------------|-----------------|----------------|-----------------|-----------------|----------------|
-| TX1 | 15 | 4| ... | pCR | Discovery|
-|  TX2 | 0| 12| ... | RD | Validation|
-| TX3| 5| 17| ... | RD | Validation|
+| TX1 | 15 | 4 | ... | pCR | Discovery|
+| TX2 | 0 | 12 | ... | RD | Validation|
+| TX3 | 5 | 17 | ... | RD | Validation|
 
 
 # Expected Output
