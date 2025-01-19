@@ -24,6 +24,8 @@ This package takes cell fractions, likely from spatial proteomics, scRNA seq or 
 # Expected Output
 For each cell type, a pCR score is assined and provided in csv file. Ucertanity values for these scores are also provided. 
 
+![image](https://github.com/user-attachments/assets/d76898ee-5e31-40fe-9c91-941080735fb4)
+
 # References
 
 Explainable Machine Learning Reveals the Role of the Breast Tumor Microenvironment in Neoadjuvant Chemotherapy Outcome
