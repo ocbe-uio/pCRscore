@@ -113,3 +113,9 @@ def test_binary_encode():
     data_encoded = svm.binary_encode(data, 'X')
     data_ref = pd.DataFrame({'X': [-1, 1]})
     assert_frame_equal(data_encoded, data_ref)
+
+    # Reversing works
+    data = pd.DataFrame({'X': ['A', 'Z']})
+    data_encoded = svm.binary_encode(data, 'X', reverse=True)
+    data_ref = pd.DataFrame({'X': [1, -1]})
+    assert_frame_equal(data_encoded, data_ref)

@@ -161,8 +161,11 @@ def shap_plot(shap_values, X, type='dot'):
     shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
 
 
-def binary_encode(data, column):
+def binary_encode(data, column, reverse=False):
     unique_values = data[column].unique()
+    if reverse:
+        # Flip unique_values order
+        unique_values = unique_values[::-1]
     if len(unique_values) != 2:
         raise ValueError(f"Column {column} does not contain exactly two unique values.")
     value_map = {unique_values[0]: -1, unique_values[1]: 1}
