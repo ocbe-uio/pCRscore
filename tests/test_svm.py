@@ -34,7 +34,7 @@ def mock_data():
     # Adding the non-numerical columns manually
     df['Trial'] = 'E-MTAB-4439'
     df['Mixture'] = 'Mixture1'
-    df['Cohort'] = 'Discovery'
+    df['Cohort'] = np.random.choice(['Discovery', 'Validation'], num_rows)
     df['Response'] = np.random.choice(['pCR', 'RD'], num_rows)
     df['ER'] = np.random.choice(['Positive', 'Negative'], num_rows)
     df['PAM50'] = np.random.choice(['LumA', 'Basal'], num_rows)
@@ -54,17 +54,14 @@ def test_preprocess(mock_read_csv, mock_data):
 
     data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock instead
     data_valid = data_disc.copy()
-    data_disc = svm.preprocess(data_disc)
+    data_disc, data_valid = svm.preprocess(data_disc)
     data_valid['Trial'] = 'GSE25066'
-    with pytest.raises(ValueError, match="Invalid SVM type."):
-        data_error = data_valid.copy()
-        svm.preprocess(data_error, svm_type="da bomb")
-    data_valid = svm.preprocess(data_valid, svm_type="validation")
 
+    assert data_disc.shape[0] + data_valid.shape[0] == 100
     for dt in [data_disc, data_valid]:
-        assert dt.shape == (100, 48)
+        assert dt.shape[1] == 48
         X, y = svm.extract_features(dt)
-        assert X.shape == (100, 44)
+        assert X.shape == (dt.shape[0], 44)
 
 
 @pytest.mark.slow
