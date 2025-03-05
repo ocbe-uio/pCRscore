@@ -21,6 +21,11 @@ def preprocess(data, split_var='Cohort'):
     categorical_cols = ['PAM50']
     data = pandas.get_dummies(data, columns=categorical_cols)
 
+    # If split_var is None, randomly split the data
+    if split_var is None:
+        data_disc, data_valid = train_test_split(data, test_size=0.5)
+        return data_disc, data_valid
+
     # Split data into discovery and validation cohorts based on split_var
     data_disc = data[data[split_var] == 'Discovery']
     data_valid = data[data[split_var] == 'Validation']

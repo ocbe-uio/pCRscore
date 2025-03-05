@@ -52,16 +52,17 @@ def test_preprocess(mock_read_csv, mock_data):
     # Configure the mock to return your predefined DataFrame
     mock_read_csv.return_value = mock_data
 
-    data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock instead
-    data_valid = data_disc.copy()
-    data_disc, data_valid = svm.preprocess(data_disc)
-    data_valid['Trial'] = 'GSE25066'
+    for col in ['Cohort']:
+        data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock
+        data_valid = data_disc.copy()
+        data_disc, data_valid = svm.preprocess(data_disc, col)
+        data_valid['Trial'] = 'GSE25066'
 
-    assert data_disc.shape[0] + data_valid.shape[0] == 100
-    for dt in [data_disc, data_valid]:
-        assert dt.shape[1] == 48
-        X, y = svm.extract_features(dt)
-        assert X.shape == (dt.shape[0], 44)
+        assert data_disc.shape[0] + data_valid.shape[0] == 100
+        for dt in [data_disc, data_valid]:
+            assert dt.shape[1] == 48
+            X, y = svm.extract_features(dt)
+            assert X.shape == (dt.shape[0], 44)
 
 
 @pytest.mark.slow
