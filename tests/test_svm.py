@@ -3,7 +3,7 @@ import pandas as pd
 from unittest import mock
 import pytest
 import numpy as np
-
+from pandas.testing import assert_frame_equal
 
 @pytest.fixture
 def mock_data():
@@ -94,3 +94,22 @@ def test_shapley():
     assert isinstance(shapl, np.ndarray)
     assert shapl.shape == (30, 44)
     svm.shap_plot(shapl, X)
+
+
+def test_binary_encode():
+    # Test with likely data
+    data = pd.DataFrame({'PAM50': ['Lum', 'Bas', 'Lum', 'Bas', 'Lum', 'Bas']})
+    data_encoded = svm.binary_encode(data, 'PAM50')
+    data_ref = pd.DataFrame({'PAM50': [-1, 1, -1, 1, -1, 1]})
+    assert_frame_equal(data_encoded, data_ref)
+
+    # Check that first value is always -1
+    data = pd.DataFrame({'X': ['A', 'Z']})
+    data_encoded = svm.binary_encode(data, 'X')
+    data_ref = pd.DataFrame({'X': [-1, 1]})
+    assert_frame_equal(data_encoded, data_ref)
+
+    data = pd.DataFrame({'X': ['Z', 'A']})
+    data_encoded = svm.binary_encode(data, 'X')
+    data_ref = pd.DataFrame({'X': [-1, 1]})
+    assert_frame_equal(data_encoded, data_ref)
