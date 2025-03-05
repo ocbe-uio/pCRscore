@@ -14,7 +14,7 @@ def preprocess(data, svm_type="discovery"):
     data.Response = [resp[item] for item in data.Response]
 
     # Mapping the values in the 'ER' column to binary values
-    data = binary_encode(data, 'ER', out_values=[0, 1])
+    data = binary_encode(data, 'ER', out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
