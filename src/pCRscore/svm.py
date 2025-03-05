@@ -50,7 +50,6 @@ def extract_features(data, y_name='Response'):
     # Drop columns that are not numerical
     X = data.select_dtypes(exclude='object')
     X = X.drop(columns=[y_name])
-    d3 = X.copy()
 
     # Standardize the features using the StandardScaler from sklearn
     # This step scales the features to have mean 0 and standard deviation 1
@@ -58,7 +57,7 @@ def extract_features(data, y_name='Response'):
     # are sensitive to feature scales
     X = pandas.DataFrame(
         preprocessing.StandardScaler().fit(X).transform(X),
-        index=d3.index, columns=d3.columns
+        index=X.index, columns=X.columns
     )
 
     return X, y
