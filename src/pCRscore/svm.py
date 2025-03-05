@@ -13,9 +13,8 @@ def preprocess(data, svm_type="discovery"):
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Mapping the values in the 'ER' column to binary values 0 and 1
-    er = {'Positive': 1, 'Negative': 0}
-    data.ER = [er[item] for item in data.ER]
+    # Mapping the values in the 'ER' column to binary values
+    data = binary_encode(data, 'ER', out_values=[0, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
