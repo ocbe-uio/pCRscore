@@ -13,9 +13,8 @@ def preprocess(data, svm_type="discovery"):
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Mapping the values in the 'ER' column to binary values 0 and 1
-    er = {'Positive': 1, 'Negative': 0}
-    data.ER = [er[item] for item in data.ER]
+    # Mapping the values in the 'ER' column to binary values
+    data = binary_encode(data, 'ER', out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
@@ -159,3 +158,19 @@ def shap_analysis(X, y, nsamples='auto', l1_reg='auto', pandas_out=False):
 
 def shap_plot(shap_values, X, type='dot'):
     shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
+
+
+def binary_encode(data, column, out_values=[-1, 1], reverse=False):
+    unique_values = data[column].unique()
+    if reverse:
+        # Flip unique_values order
+        unique_values = unique_values[::-1]
+    if len(unique_values) != 2:
+        raise ValueError(f"{column} doesn't contain exactly two unique values.")
+    print(
+        "Recoding '", unique_values[0], "' as ", -1,
+        " and '", unique_values[1], "' as ", 1, sep=''
+    )
+    value_map = {unique_values[0]: out_values[0], unique_values[1]: out_values[1]}
+    data[column] = data[column].map(value_map)
+    return data
