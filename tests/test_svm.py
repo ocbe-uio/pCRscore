@@ -5,6 +5,7 @@ import pytest
 import numpy as np
 from pandas.testing import assert_frame_equal
 
+
 @pytest.fixture
 def mock_data():
     # Define the column names
