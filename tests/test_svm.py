@@ -97,26 +97,26 @@ def test_shapley():
     svm.shap_plot(shapl, X)
 
 
-def test_binary_encode():
+def test__binary_encode():
     # Test with likely data
     data = pd.DataFrame({'PAM50': ['Lum', 'Bas', 'Lum', 'Bas', 'Lum', 'Bas']})
-    data_encoded = svm.binary_encode(data, 'PAM50')
+    data_encoded = svm._binary_encode(data, 'PAM50')
     data_ref = pd.DataFrame({'PAM50': [-1, 1, -1, 1, -1, 1]})
     assert_frame_equal(data_encoded, data_ref)
 
     # Check that first value is always -1
     data = pd.DataFrame({'X': ['A', 'Z']})
-    data_encoded = svm.binary_encode(data, 'X')
+    data_encoded = svm._binary_encode(data, 'X')
     data_ref = pd.DataFrame({'X': [-1, 1]})
     assert_frame_equal(data_encoded, data_ref)
 
     data = pd.DataFrame({'X': ['Z', 'A']})
-    data_encoded = svm.binary_encode(data, 'X')
+    data_encoded = svm._binary_encode(data, 'X')
     data_ref = pd.DataFrame({'X': [-1, 1]})
     assert_frame_equal(data_encoded, data_ref)
 
     # Reversing works
     data = pd.DataFrame({'X': ['A', 'Z']})
-    data_encoded = svm.binary_encode(data, 'X', reverse=True)
+    data_encoded = svm._binary_encode(data, 'X', reverse=True)
     data_ref = pd.DataFrame({'X': [1, -1]})
     assert_frame_equal(data_encoded, data_ref)

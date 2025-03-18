@@ -14,7 +14,7 @@ def preprocess(data, svm_type="discovery"):
     data.Response = [resp[item] for item in data.Response]
 
     # Mapping the values in the 'ER' column to binary values
-    data = binary_encode(data, 'ER', out_values=[-1, 1])
+    data = _binary_encode(data, 'ER', out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
@@ -160,7 +160,7 @@ def shap_plot(shap_values, X, type='dot'):
     shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
 
 
-def binary_encode(data, column, out_values=[-1, 1], reverse=False):
+def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
     unique_values = data[column].unique()
     if reverse:
         # Flip unique_values order
