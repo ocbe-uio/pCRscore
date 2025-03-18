@@ -14,8 +14,11 @@ def preprocess(data, split_var='Cohort'):
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Mapping the values in the 'ER' column to binary values
-    data = _binary_encode(data, 'ER', out_values=[-1, 1])
+    # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
+    for col in data.columns:
+        if len(data[col].unique()) == 2 and \
+        set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+            data = _binary_encode(data, col, out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
