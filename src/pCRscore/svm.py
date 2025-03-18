@@ -9,15 +9,21 @@ from sklearn.svm import SVC
 from .misc import _binary_encode
 
 
-def preprocess(data, split_var='Cohort'):
+def preprocess(data, split_var='Cohort', bin_vars='auto'):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
-    for col in data.columns:
-        if len(data[col].unique()) == 2 and \
-        set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+    # Recode variables listed under bin_vars to {-1, 1}
+    if bin_vars == 'auto':
+        # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
+        for col in data.columns:
+            if len(data[col].unique()) == 2 and \
+                pandas.api.types.is_string_dtype(data[col]) and \
+                    set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+                data = _binary_encode(data, col, out_values=[-1, 1])
+    else:
+        for col in bin_vars:
             data = _binary_encode(data, col, out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
