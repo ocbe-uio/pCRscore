@@ -6,6 +6,7 @@ from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
     GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
+from .misc import _binary_encode
 
 
 def preprocess(data, svm_type="discovery"):
@@ -158,21 +159,3 @@ def shap_analysis(X, y, nsamples='auto', l1_reg='auto', pandas_out=False):
 
 def shap_plot(shap_values, X, type='dot'):
     shap.summary_plot(shap_values, X, feature_names=X.columns, plot_type=type)
-
-
-def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
-    unique_values = data[column].unique()
-    if reverse:
-        # Flip unique_values order
-        unique_values = unique_values[::-1]
-    if len(unique_values) != 2:
-        raise ValueError(f"{column} must contain exactly two unique values.")
-    print(
-        "Recoding '", unique_values[0], "' as ", -1,
-        " and '", unique_values[1], "' as ", 1, sep=''
-    )
-    value_map = {
-       unique_values[0]: out_values[0], unique_values[1]: out_values[1]
-    }
-    data[column] = data[column].map(value_map)
-    return data
