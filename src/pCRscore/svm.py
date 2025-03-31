@@ -28,7 +28,16 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
 
     # Creating dummy variables for the categorical variables
     if cat_vars == 'auto':
-        pass
+        # replace cat_vars with a list of variables that have between 5 and 4 unique values
+        cat_vars = data.select_dtypes('object').columns
+        for col in cat_vars:
+            if len(data[col].unique()) > 5 or len(data[col].unique()) < 3:
+                cat_vars = cat_vars.drop(col)
+        # Remove the 'Response' column from cat_vars
+        cat_vars = [col for col in cat_vars if col != 'Response']
+        # If no categorical variables are found, set cat_vars to None
+        if len(cat_vars) > 0:
+            data = pandas.get_dummies(data, columns=cat_vars)
     else:
         data = pandas.get_dummies(data, columns=cat_vars)
 
