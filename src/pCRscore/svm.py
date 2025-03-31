@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 from .misc import _binary_encode
 
 
-def preprocess(data, svm_type="discovery"):
+def preprocess(data, split_var='Cohort'):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
@@ -21,25 +21,16 @@ def preprocess(data, svm_type="discovery"):
     categorical_cols = ['PAM50']
     data = pandas.get_dummies(data, columns=categorical_cols)
 
-    # Selecting validation cohort data
-    if svm_type == "discovery":
-        valid_cohort = [
-            'E-MTAB-4439', 'GSE18728', 'GSE19697', 'GSE20194', 'GSE20271',
-            'GSE22093', 'GSE22358', 'GSE42822', 'GSE22513'
-        ]
-    elif svm_type == "validation":
-        valid_cohort = [
-            'GSE25066', 'GSE32603', 'GSE32646', 'GSE37946', 'GSE50948',
-            'GSE23988'
-        ]
-    else:
-        raise ValueError(
-            "Invalid SVM type. Choose 'discovery' or 'validation'"
-        )
+    # If split_var is None, randomly split the data
+    if split_var is None:
+        data_disc, data_valid = train_test_split(data, test_size=0.5)
+        return data_disc, data_valid
 
-    data = data[data['Trial'].isin(valid_cohort)]
+    # Split data into discovery and validation cohorts based on split_var
+    data_disc = data[data[split_var] == 'Discovery']
+    data_valid = data[data[split_var] == 'Validation']
 
-    return data
+    return data_disc, data_valid
 
 
 def extract_features(data, y_name='Response'):
