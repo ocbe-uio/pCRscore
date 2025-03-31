@@ -38,7 +38,9 @@ def mock_data():
     df['Cohort'] = np.random.choice(['Discovery', 'Validation'], num_rows)
     df['Response'] = np.random.choice(['pCR', 'RD'], num_rows)
     df['ER'] = np.random.choice(['Positive', 'Negative'], num_rows)
-    df['PAM50'] = np.random.choice(['Normal', 'LumA', 'Her2', 'LumB', 'Basal'], num_rows)
+    df['PAM50'] = np.random.choice(
+        ['Normal', 'LumA', 'Her2', 'LumB', 'Basal'], num_rows
+    )
 
     return df
 

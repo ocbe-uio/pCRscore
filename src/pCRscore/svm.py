@@ -28,7 +28,7 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
 
     # Creating dummy variables for the categorical variables
     if cat_vars == 'auto':
-        # replace cat_vars with a list of variables that have between 5 and 4 unique values
+        # replace cat_vars with vars that have between 5 and 4 unique values
         cat_vars = data.select_dtypes('object').columns
         for col in cat_vars:
             if len(data[col].unique()) > 5 or len(data[col].unique()) < 3:
