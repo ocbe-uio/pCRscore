@@ -42,15 +42,14 @@ def preprocess(data, svm_type="discovery"):
     return data
 
 
-def extract_features(data):
-    # Extract the features (independent variables) and create a DataFrame 'X'
-    # Drop columns 'Trial', 'Mixture', 'Response', and 'Cohort' to get features
-    dropped_columns = ['Trial', 'Mixture', 'Response', 'Cohort']
-    X = data.drop(dropped_columns, axis=1)
-    d3 = data.drop(dropped_columns, axis=1)
-
+def extract_features(data, y_name='Response'):
     # Extract the target variable 'y' (dependent variable)
-    y = data['Response']
+    y = data[y_name]
+
+    # Extract the features (independent variables) and create a DataFrame 'X'
+    # Drop columns that are not numerical
+    X = data.select_dtypes(exclude='object')
+    X = X.drop(columns=[y_name])
 
     # Standardize the features using the StandardScaler from sklearn
     # This step scales the features to have mean 0 and standard deviation 1
@@ -58,7 +57,7 @@ def extract_features(data):
     # are sensitive to feature scales
     X = pandas.DataFrame(
         preprocessing.StandardScaler().fit(X).transform(X),
-        index=d3.index, columns=d3.columns
+        index=X.index, columns=X.columns
     )
 
     return X, y
