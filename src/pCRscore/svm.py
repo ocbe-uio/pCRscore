@@ -6,6 +6,7 @@ from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
     GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
+from .misc import _binary_encode
 
 
 def preprocess(data, split_var='Cohort'):
@@ -13,9 +14,8 @@ def preprocess(data, split_var='Cohort'):
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Mapping the values in the 'ER' column to binary values 0 and 1
-    er = {'Positive': 1, 'Negative': 0}
-    data.ER = [er[item] for item in data.ER]
+    # Mapping the values in the 'ER' column to binary values
+    data = _binary_encode(data, 'ER', out_values=[-1, 1])
 
     # Creating dummy variables for the categorical column 'PAM50'
     categorical_cols = ['PAM50']
