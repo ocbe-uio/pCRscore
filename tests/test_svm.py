@@ -56,7 +56,7 @@ def test_preprocess(mock_read_csv, mock_data):
     for col in ['Cohort']:
         data_disc = pd.read_csv("Data NAC cohort _1_.csv")  # returns mock
         data_valid = data_disc.copy()
-        data_disc, data_valid = svm.preprocess(data_disc, col)
+        data_disc, data_valid = svm.preprocess(data_disc, col, cat_vars=['PAM50'])
         data_valid['Trial'] = 'GSE25066'
 
         assert data_disc.shape[0] + data_valid.shape[0] == 100

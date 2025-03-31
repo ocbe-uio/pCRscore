@@ -9,7 +9,7 @@ from sklearn.svm import SVC
 from .misc import _binary_encode
 
 
-def preprocess(data, split_var='Cohort', bin_vars='auto'):
+def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
@@ -26,9 +26,11 @@ def preprocess(data, split_var='Cohort', bin_vars='auto'):
         for col in bin_vars:
             data = _binary_encode(data, col, out_values=[-1, 1])
 
-    # Creating dummy variables for the categorical column 'PAM50'
-    categorical_cols = ['PAM50']
-    data = pandas.get_dummies(data, columns=categorical_cols)
+    # Creating dummy variables for the categorical variables
+    if cat_vars == 'auto':
+        pass
+    else:
+        data = pandas.get_dummies(data, columns=cat_vars)
 
     # If split_var is None, randomly split the data
     if split_var is None:
