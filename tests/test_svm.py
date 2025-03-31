@@ -33,17 +33,12 @@ def mock_data():
     )
 
     # Adding the non-numerical columns manually
-    df['Trial'] = 'E-MTAB-4439'
+    df['Trial'] = 'E-MTAB-4239'
     df['Mixture'] = 'Mixture1'
     df['Cohort'] = np.random.choice(['Discovery', 'Validation'], num_rows)
     df['Response'] = np.random.choice(['pCR', 'RD'], num_rows)
     df['ER'] = np.random.choice(['Positive', 'Negative'], num_rows)
-    df['PAM50'] = np.random.choice(['LumA', 'Basal'], num_rows)
-    df['PAM50_Normal'] = np.random.choice([True, False], num_rows)
-    df['PAM50_LumA'] = np.random.choice([True, False], num_rows)
-    df['PAM50_Her2'] = np.random.choice([True, False], num_rows)
-    df['PAM50_LumB'] = np.random.choice([True, False], num_rows)
-    df['PAM50_Basal'] = np.random.choice([True, False], num_rows)
+    df['PAM50'] = np.random.choice(['Normal', 'LumA', 'Her2', 'LumB', 'Basal'], num_rows)
 
     return df
 
@@ -61,14 +56,14 @@ def test_preprocess(mock_read_csv, mock_data):
 
         assert data_disc.shape[0] + data_valid.shape[0] == 100
         for dt in [data_disc, data_valid]:
-            assert dt.shape[1] == 48
+            assert dt.shape[1] == 46
             X, y = svm.extract_features(dt)
-            assert X.shape == (dt.shape[0], 44)
+            assert X.shape == (dt.shape[0], 42)
 
 
 @pytest.mark.slow
 def test_grid_search():
-    X = pd.DataFrame(np.random.randn(100, 44))
+    X = pd.DataFrame(np.random.randn(100, 42))
     y = np.random.choice([0, 1], 100)
     grid = svm.grid_search(X, y, n_cores=-2)
     assert isinstance(grid, svm.GridSearchCV)
@@ -77,7 +72,7 @@ def test_grid_search():
 
 
 def test_evaluate_model():
-    X = np.random.randn(100, 44)
+    X = np.random.randn(100, 42)
     y = np.random.choice([0, 1], 100)
     stats = svm.evaluate_model(X, y)
     assert isinstance(stats, dict)
@@ -87,19 +82,19 @@ def test_evaluate_model():
 
 
 def test_shapley():
-    X = pd.DataFrame(np.random.randn(30, 44))
+    X = pd.DataFrame(np.random.randn(30, 42))
     y = np.random.choice([0, 1], 30)
     shapl = svm.shap_analysis(X, y)
     assert isinstance(shapl, np.ndarray)
-    assert shapl.shape == (30, 44)
+    assert shapl.shape == (30, 42)
     svm.shap_plot(shapl, X)
 
 
 def test__binary_encode():
     # Test with likely data
-    data = pd.DataFrame({'PAM50': ['Lum', 'Bas', 'Lum', 'Bas', 'Lum', 'Bas']})
-    data_encoded = svm._binary_encode(data, 'PAM50')
-    data_ref = pd.DataFrame({'PAM50': [-1, 1, -1, 1, -1, 1]})
+    data = pd.DataFrame({'ER': ['Neg', 'Pos', 'Neg', 'Pos', 'Neg', 'Pos']})
+    data_encoded = svm._binary_encode(data, 'ER')
+    data_ref = pd.DataFrame({'ER': [-1, 1, -1, 1, -1, 1]})
     assert_frame_equal(data_encoded, data_ref)
 
     # Check that first value is always -1
