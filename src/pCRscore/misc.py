@@ -1,3 +1,6 @@
+import pandas
+
+
 def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
     unique_values = data[column].unique()
     if reverse:
@@ -19,13 +22,12 @@ def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
 def _is_binary_neg_pos(col):
     try:
         return set(col.str[:3].unique()) in [{'Neg', 'Pos'}]
-    except:
+    except Exception:
         return False
 
-import pandas
 
 def _auto_get_dummies(data, min_levels=3, max_levels=5):
-    cat_vars = data.select_dtypes('object').columns # Start with all cols
+    cat_vars = data.select_dtypes('object').columns  # Start with all cols
 
     for col in cat_vars:
         # Drop columns with too many or too few unique values
