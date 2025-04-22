@@ -9,17 +9,37 @@ from sklearn.svm import SVC
 from .misc import _binary_encode
 
 
-def preprocess(data, split_var='Cohort'):
+def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
     # Mapping the values in the 'Response' column to binary values 0 and 1
     resp = {'pCR': 1, 'RD': 0}
     data.Response = [resp[item] for item in data.Response]
 
-    # Mapping the values in the 'ER' column to binary values
-    data = _binary_encode(data, 'ER', out_values=[-1, 1])
+    # Recode variables listed under bin_vars to {-1, 1}
+    if bin_vars == 'auto':
+        # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
+        for col in data.columns:
+            if len(data[col].unique()) == 2 and \
+                pandas.api.types.is_string_dtype(data[col]) and \
+                    set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+                data = _binary_encode(data, col, out_values=[-1, 1])
+    else:
+        for col in bin_vars:
+            data = _binary_encode(data, col, out_values=[-1, 1])
 
-    # Creating dummy variables for the categorical column 'PAM50'
-    categorical_cols = ['PAM50']
-    data = pandas.get_dummies(data, columns=categorical_cols)
+    # Creating dummy variables for the categorical variables
+    if cat_vars == 'auto':
+        # replace cat_vars with vars that have between 5 and 4 unique values
+        cat_vars = data.select_dtypes('object').columns
+        for col in cat_vars:
+            if len(data[col].unique()) > 5 or len(data[col].unique()) < 3:
+                cat_vars = cat_vars.drop(col)
+        # Remove the 'Response' column from cat_vars
+        cat_vars = [col for col in cat_vars if col != 'Response']
+        # If no categorical variables are found, set cat_vars to None
+        if len(cat_vars) > 0:
+            data = pandas.get_dummies(data, columns=cat_vars)
+    else:
+        data = pandas.get_dummies(data, columns=cat_vars)
 
     # If split_var is None, randomly split the data
     if split_var is None:
