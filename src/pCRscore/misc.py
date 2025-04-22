@@ -26,6 +26,14 @@ def _is_binary_neg_pos(col):
         return False
 
 
+def _auto_binary_encode(data):
+    # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
+    for col in data.columns:
+        if _is_binary_neg_pos(data[col]):
+            data = _binary_encode(data, col)
+    return data
+
+
 def _auto_get_dummies(data, min_levels=3, max_levels=5):
     cat_vars = data.select_dtypes('object').columns  # Start with all cols
 
