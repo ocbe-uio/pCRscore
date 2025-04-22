@@ -6,7 +6,7 @@ from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
     GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
-from .misc import _binary_encode
+from .misc import _binary_encode, _is_binary_neg_pos, _auto_get_dummies
 
 
 def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
@@ -18,9 +18,7 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
     if bin_vars == 'auto':
         # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
         for col in data.columns:
-            if len(data[col].unique()) == 2 and \
-                pandas.api.types.is_string_dtype(data[col]) and \
-                    set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+            if _is_binary_neg_pos(data[col]):
                 data = _binary_encode(data, col, out_values=[-1, 1])
     else:
         for col in bin_vars:
@@ -28,16 +26,7 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
 
     # Creating dummy variables for the categorical variables
     if cat_vars == 'auto':
-        # replace cat_vars with vars that have between 5 and 4 unique values
-        cat_vars = data.select_dtypes('object').columns
-        for col in cat_vars:
-            if len(data[col].unique()) > 5 or len(data[col].unique()) < 3:
-                cat_vars = cat_vars.drop(col)
-        # Remove the 'Response' column from cat_vars
-        cat_vars = [col for col in cat_vars if col != 'Response']
-        # If no categorical variables are found, set cat_vars to None
-        if len(cat_vars) > 0:
-            data = pandas.get_dummies(data, columns=cat_vars)
+        data = _auto_get_dummies(data)
     else:
         data = pandas.get_dummies(data, columns=cat_vars)
 
