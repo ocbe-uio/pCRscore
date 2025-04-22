@@ -14,3 +14,14 @@ def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
     }
     data[column] = data[column].map(value_map)
     return data
+
+
+def _is_binary_neg_pos(col):
+    """
+    Check if a column in a DataFrame is binary.
+    A column is considered binary if it contains exactly two unique values.
+    """
+    try:
+        return set(col.str[:3].unique()) in [{'Neg', 'Pos'}]
+    except:
+        return False

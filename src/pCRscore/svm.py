@@ -6,7 +6,7 @@ from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
     GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
-from .misc import _binary_encode
+from .misc import _binary_encode, _is_binary_neg_pos
 
 
 def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
@@ -18,9 +18,7 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
     if bin_vars == 'auto':
         # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
         for col in data.columns:
-            if len(data[col].unique()) == 2 and \
-                pandas.api.types.is_string_dtype(data[col]) and \
-                    set(data[col].str[:3].unique()) in [{'Neg', 'Pos'}]:
+            if _is_binary_neg_pos(data[col]):
                 data = _binary_encode(data, col, out_values=[-1, 1])
     else:
         for col in bin_vars:
