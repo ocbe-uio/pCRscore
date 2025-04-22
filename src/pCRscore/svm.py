@@ -6,7 +6,7 @@ from sklearn.metrics import make_scorer, f1_score, accuracy_score
 from sklearn.model_selection import \
     GridSearchCV, train_test_split, KFold, cross_val_score
 from sklearn.svm import SVC
-from .misc import _binary_encode, _is_binary_neg_pos, _auto_get_dummies
+from .misc import _binary_encode, _auto_get_dummies, _auto_binary_encode
 
 
 def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
@@ -16,13 +16,10 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
 
     # Recode variables listed under bin_vars to {-1, 1}
     if bin_vars == 'auto':
-        # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
-        for col in data.columns:
-            if _is_binary_neg_pos(data[col]):
-                data = _binary_encode(data, col, out_values=[-1, 1])
+        data = _auto_binary_encode(data)
     else:
         for col in bin_vars:
-            data = _binary_encode(data, col, out_values=[-1, 1])
+            data = _binary_encode(data, col)
 
     # Creating dummy variables for the categorical variables
     if cat_vars == 'auto':
@@ -30,14 +27,12 @@ def preprocess(data, split_var='Cohort', bin_vars='auto', cat_vars='auto'):
     else:
         data = pandas.get_dummies(data, columns=cat_vars)
 
-    # If split_var is None, randomly split the data
+    # Split the data (either randomly or based on a variable)
     if split_var is None:
         data_disc, data_valid = train_test_split(data, test_size=0.5)
-        return data_disc, data_valid
-
-    # Split data into discovery and validation cohorts based on split_var
-    data_disc = data[data[split_var] == 'Discovery']
-    data_valid = data[data[split_var] == 'Validation']
+    else:
+        data_disc = data[data[split_var] == 'Discovery']
+        data_valid = data[data[split_var] == 'Validation']
 
     return data_disc, data_valid
 

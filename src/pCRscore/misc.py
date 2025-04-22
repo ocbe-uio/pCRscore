@@ -26,17 +26,25 @@ def _is_binary_neg_pos(col):
         return False
 
 
+def _auto_binary_encode(data):
+    # Sweep all columns. If coded as {Neg*, Pos*}, recode to {-1, 1}
+    for col in data.columns:
+        if _is_binary_neg_pos(data[col]):
+            data = _binary_encode(data, col)
+    return data
+
+
 def _auto_get_dummies(data, min_levels=3, max_levels=5):
     cat_vars = data.select_dtypes('object').columns  # Start with all cols
+
+    # 'Response' doesn't need recoding
+    cat_vars = cat_vars.drop('Response', errors='ignore')
 
     for col in cat_vars:
         # Drop columns with too many or too few unique values
         n_unique = len(data[col].unique())
         if n_unique > max_levels or n_unique < min_levels:
             cat_vars = cat_vars.drop(col)
-
-    # 'Response' doesn't need recoding
-    cat_vars = [col for col in cat_vars if col != 'Response']
 
     # If no categorical variables are found, set cat_vars to None
     if len(cat_vars) > 0:
