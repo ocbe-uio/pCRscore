@@ -17,10 +17,6 @@ def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
 
 
 def _is_binary_neg_pos(col):
-    """
-    Check if a column in a DataFrame is binary.
-    A column is considered binary if it contains exactly two unique values.
-    """
     try:
         return set(col.str[:3].unique()) in [{'Neg', 'Pos'}]
     except:
@@ -29,10 +25,6 @@ def _is_binary_neg_pos(col):
 import pandas
 
 def _auto_get_dummies(data, min_levels=3, max_levels=5):
-    """
-    Check if a column in a DataFrame is multilevel.
-    A column is considered multilevel if it contains more than min_levels unique values.
-    """
     cat_vars = data.select_dtypes('object').columns # Start with all cols
 
     for col in cat_vars:
@@ -41,7 +33,7 @@ def _auto_get_dummies(data, min_levels=3, max_levels=5):
         if n_unique > max_levels or n_unique < min_levels:
             cat_vars = cat_vars.drop(col)
 
-    # Remove the 'Response' column from cat_vars
+    # 'Response' doesn't need recoding
     cat_vars = [col for col in cat_vars if col != 'Response']
 
     # If no categorical variables are found, set cat_vars to None
