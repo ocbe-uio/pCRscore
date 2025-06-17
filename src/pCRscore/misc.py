@@ -5,7 +5,8 @@ def _binary_encode(data, column, out_values=[-1, 1], reverse=False):
     if isinstance(column, list):
         reference = column[1]
         column = column[0]
-        # Replace all instances of data[column] that are not equal to reference with "not reference"
+        # Replace all instances of data[column] that are not equal to reference
+        # with "not reference"
         data[column] = [
             reference if row == reference else f"not {reference}"
             for row in data[column]
