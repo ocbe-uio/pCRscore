@@ -15,6 +15,8 @@ The package implements a novel pipeline that:
 - Validates findings across discovery and validation cohorts
 - Provides uncertainty estimates through confidence intervals
 
+**Note**: While this package was developed and validated on breast cancer data, it is a generic framework that can be applied to different cancer types, as long as the input data follows the structure described in the "Expected Input" section below. The methodology is agnostic to the specific cell types or cancer type, making it adaptable to various tumor microenvironments and treatment response scenarios.
+
 ## Key Findings from the Paper
 
 The analysis of more than 2000 breast tumor samples revealed that multiple cell types exhibit distinct associations with pCR within different tumor subtypes. Notably:
